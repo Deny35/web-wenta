@@ -86,7 +86,8 @@ window.addEventListener('scroll', () => {
 
 
 // Formularz
-document.querySelector('form').addEventListener('submit', e => {
+const contactForm = document.querySelector('form');
+if (contactForm) contactForm.addEventListener('submit', e => {
   e.preventDefault();
   const btn = e.target.querySelector('.btn-send');
   btn.textContent = '✓ Wysłano – odpiszemy wkrótce!';
