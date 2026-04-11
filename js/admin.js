@@ -101,7 +101,7 @@ function setModeEdit(project) {
   if (coverData) { coverPreview.src = coverData; coverPreview.hidden = false; }
   else           { coverPreview.hidden = true; coverPreview.src = ''; }
 
-  descInput.value = project.desc || '';
+  descInput.value = project.opis || '';
   galleryData = Array.isArray(project.images) ? project.images.slice() : [];
   renderGalleryPreview();
 
@@ -165,7 +165,7 @@ tileForm.addEventListener('submit', function (e) {
   } else {
     promise = Projects.add({
       title: title, category: category, year: year,
-      img: coverData, images: [], desc: '', featured: false
+      img: coverData, images: [], opis: '', featured: false
     }).then(function () {
       showSuccess('Projekt dodany!');
       setModeAdd();
@@ -180,7 +180,7 @@ tileForm.addEventListener('submit', function (e) {
     console.error(err);
     tileSubmit.disabled = false;
     tileSubmit.textContent = editingId ? 'Zapisz kafelek' : 'Dodaj projekt';
-    alert('Błąd zapisu. Sprawdź połączenie z bazą danych.');
+    alert('Błąd zapisu: ' + err.message);
   });
 });
 
@@ -196,7 +196,7 @@ detailsForm.addEventListener('submit', function (e) {
   Projects.get().then(function (list) {
     const current = list.find(function (p) { return p.id === editingId; }) || {};
     const images = galleryData.length ? galleryData : (current.images || []);
-    return Projects.update(editingId, { desc: descInput.value.trim(), images: images });
+    return Projects.update(editingId, { opis: descInput.value.trim(), images: images });
   }).then(function () {
     showSuccess('Szczegóły zaktualizowane!');
     submitBtn.disabled = false;

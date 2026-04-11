@@ -2,8 +2,8 @@
 
 const Projects = (function () {
 
-  const SUPABASE_URL = 'https://TWOJ_ID.supabase.co';   // ← wklej Project URL
-  const SUPABASE_KEY = 'TWOJ_ANON_KEY';                  // ← wklej anon key
+  const SUPABASE_URL = 'https://twkupxjqorpjpztggkyc.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3a3VweGpxb3JwanB6dGdna3ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MDk4OTAsImV4cCI6MjA5MTQ4NTg5MH0.nv-1b8sqnZWndwCzRU9h7KW5187BlvVKXDykGuoceLo';
 
   const BASE = SUPABASE_URL + '/rest/v1/projects';
   const HEADERS = {
@@ -24,19 +24,21 @@ const Projects = (function () {
 
   async function add(project) {
     project.id = Date.now();
-    await fetch(BASE, {
+    const res = await fetch(BASE, {
       method: 'POST',
       headers: HEADERS,
       body: JSON.stringify(project)
     });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message || res.status); }
   }
 
   async function update(id, changes) {
-    await fetch(BASE + '?id=eq.' + id, {
+    const res = await fetch(BASE + '?id=eq.' + id, {
       method: 'PATCH',
       headers: HEADERS,
       body: JSON.stringify(changes)
     });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message || res.status); }
   }
 
   async function remove(id) {
