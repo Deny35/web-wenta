@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realizacje – Wenta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { brand: '#2EA3F2', accent: '#E35B1C', dark: '#1a2633' },
+        fontFamily: { sans: ['Open Sans', 'sans-serif'] }
+      }}
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="font-sans text-slate-600 bg-white">
+
+<!-- HEADER -->
+<header id="header" class="sticky top-0 z-50 bg-white border-b border-slate-200">
+  <div class="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
+
+    <a href="index.html" class="flex items-center gap-2 font-extrabold text-xl text-slate-800 no-underline">
+      <div class="w-9 h-9 bg-brand rounded-lg grid place-items-center flex-shrink-0">
+        <svg class="w-5 h-5 fill-white" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      Wen<span class="text-brand">ta</span>
+    </a>
+
+    <nav id="nav" class="hidden md:flex items-center gap-1 text-sm font-semibold">
+      <ul class="flex items-center gap-1 list-none m-0 p-0">
+        <li><a href="index.html#o-firmie" class="px-3 py-2 rounded text-slate-500 hover:text-brand transition-colors">O firmie</a></li>
+        <li>
+          <a href="index.html#produkty" class="px-3 py-2 rounded text-slate-500 hover:text-brand transition-colors">Produkty ▾</a>
+          <ul class="list-none m-0 p-0">
+            <li><a href="index.html#produkty">Linie technologiczne</a></li>
+            <li><a href="index.html#produkty">Zbiorniki nierdzewne</a></li>
+            <li><a href="index.html#produkty">Instalacje rurowe</a></li>
+            <li><a href="index.html#produkty">SKID-y produkcyjne</a></li>
+            <li><a href="index.html#produkty">Automatyka</a></li>
+            <li><a href="index.html#produkty">Stacje CIP</a></li>
+            <li><a href="index.html#produkty">Mieszalniki</a></li>
+          </ul>
+        </li>
+        <li><a href="index.html#uslugi"  class="px-3 py-2 rounded text-slate-500 hover:text-brand transition-colors">Usługi</a></li>
+        <li><a href="projekty.html"      class="px-3 py-2 rounded text-slate-500 hover:text-brand transition-colors">Realizacje</a></li>
+        <li><a href="index.html#klienci" class="px-3 py-2 rounded text-slate-500 hover:text-brand transition-colors">Klienci</a></li>
+        <li><a href="index.html#kontakt" class="ml-2 px-4 py-2 rounded bg-accent text-white hover:opacity-90 transition-opacity">Kontakt</a></li>
+      </ul>
+    </nav>
+
+    <button class="burger md:hidden flex flex-col gap-1.5 p-1 bg-transparent border-0 cursor-pointer" aria-label="Menu">
+      <span class="block w-6 h-0.5 bg-slate-800 rounded transition-transform duration-200"></span>
+      <span class="block w-6 h-0.5 bg-slate-800 rounded transition-opacity duration-200"></span>
+      <span class="block w-6 h-0.5 bg-slate-800 rounded transition-transform duration-200"></span>
+    </button>
+  </div>
+
+  <nav class="mobile-nav hidden flex-col border-t-4 border-brand bg-white">
+    <a href="index.html#o-firmie"  class="px-6 py-3 font-semibold text-slate-600 border-b border-slate-100 hover:text-brand">O firmie</a>
+    <a href="index.html#produkty"  class="px-6 py-3 font-semibold text-slate-600 border-b border-slate-100 hover:text-brand">Produkty</a>
+    <a href="index.html#uslugi"    class="px-6 py-3 font-semibold text-slate-600 border-b border-slate-100 hover:text-brand">Usługi</a>
+    <a href="projekty.html"        class="px-6 py-3 font-semibold text-slate-600 border-b border-slate-100 hover:text-brand">Realizacje</a>
+    <a href="index.html#klienci"   class="px-6 py-3 font-semibold text-slate-600 border-b border-slate-100 hover:text-brand">Klienci</a>
+    <a href="index.html#kontakt"   class="px-6 py-3 font-semibold text-slate-600 hover:text-brand">Kontakt</a>
+  </nav>
+</header>
+
+<!-- TREŚĆ -->
+<section class="py-20">
+  <div class="max-w-5xl mx-auto px-6">
+    <span class="text-xs font-bold tracking-widest uppercase text-brand">Realizacje</span>
+    <h1 class="mt-1 mb-2 text-4xl font-extrabold text-slate-800">Wszystkie projekty</h1>
+    <p class="text-slate-400 mb-10">Pełna lista zrealizowanych instalacji technologicznych.</p>
+    <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-slate-950 py-6">
+  <div class="max-w-5xl mx-auto px-6 flex flex-wrap items-center justify-between gap-3 text-xs text-white/30">
+    <span>&copy; 2025 Wenta. Wszelkie prawa zastrzeżone.</span>
+    <a href="polityka-prywatnosci.html" class="text-white/30 hover:text-brand transition-colors">Polityka prywatności</a>
+  </div>
+</footer>
+
+<script src="js/projects.js"></script>
+<script>Projects.render(document.getElementById('projects-grid'));</script>
+<script>
+  var burger = document.querySelector('.burger');
+  var mobileNav = document.querySelector('.mobile-nav');
+  burger.addEventListener('click', function() {
+    burger.classList.toggle('open');
+    mobileNav.classList.toggle('open');
+  });
+  document.querySelectorAll('.mobile-nav a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      burger.classList.remove('open');
+      mobileNav.classList.remove('open');
+    });
+  });
+</script>
+</body>
+</html>

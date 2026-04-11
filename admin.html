@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Wenta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --blue:#2EA3F2; --orange:#E35B1C; --dark:#1a2633; --border:#e5ecf4; --r:6px; }
+    [hidden] { display: none !important; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Open Sans', sans-serif; font-size: 14px; background: #f5f7fa; color: #444; min-height: 100vh; }
+    a { color: var(--blue); text-decoration: none; }
+    h2 { font-size: 1.3rem; font-weight: 800; color: #222; }
+    h3 { font-size: 1rem; font-weight: 700; color: #222; margin-bottom: 1rem; }
+    p  { font-size: .85rem; color: #888; line-height: 1.6; }
+
+    /* ── Nav ── */
+    .topbar {
+      background: var(--dark); color: rgba(255,255,255,.7);
+      padding: .85rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-logo { font-weight: 800; font-size: 1.1rem; color: #fff; }
+    .topbar-logo span { color: var(--blue); }
+    .topbar-right { display: flex; align-items: center; gap: 1.5rem; font-size: .82rem; }
+    .topbar-right a { color: rgba(255,255,255,.55); }
+    .topbar-right a:hover { color: #fff; }
+    #btn-logout {
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.7); padding: .35rem .9rem; border-radius: var(--r);
+      font-size: .8rem; cursor: pointer; font-family: inherit;
+      transition: background .2s;
+    }
+    #btn-logout:hover { background: rgba(255,255,255,.2); }
+
+    /* ── Layout ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+    /* ── Login ── */
+    #login-screen {
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - 52px);
+    }
+    .login-box {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 2.5rem 2rem;
+      width: 100%; max-width: 360px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    }
+    .login-box h2 { margin-bottom: .4rem; }
+    .login-box p  { margin-bottom: 1.75rem; }
+
+    /* ── Formularz ── */
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: #888; margin-bottom: .3rem; }
+    input[type=text], input[type=password], input[type=number], textarea, select {
+      width: 100%; padding: .65rem .85rem;
+      border: 1px solid var(--border); border-radius: var(--r);
+      font-family: inherit; font-size: .88rem; color: #333;
+      outline: none; transition: border-color .2s; background: #fff;
+    }
+    input:focus, textarea:focus { border-color: var(--blue); }
+    textarea { min-height: 120px; resize: vertical; }
+
+    .btn-primary {
+      background: var(--blue); color: #fff;
+      border: none; border-radius: var(--r);
+      padding: .7rem 1.5rem; font-family: inherit;
+      font-size: .88rem; font-weight: 700; cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: .85; }
+
+    /* ── Błąd logowania ── */
+    .alert-error {
+      background: #fef2f2; border: 1px solid #fca5a5;
+      color: #b91c1c; border-radius: var(--r);
+      padding: .6rem .85rem; font-size: .83rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Komunikat sukcesu ── */
+    .alert-ok {
+      background: #f0fdf4; border: 1px solid #86efac;
+      color: #166534; border-radius: var(--r);
+      padding: .6rem .85rem; font-size: .83rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Panel ── */
+    .panel-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem; align-items: start; margin-top: 2rem; }
+
+    .card-box {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.75rem;
+    }
+
+    /* ── Zakładki ── */
+    .tabs {
+      display: flex; border-bottom: 2px solid var(--border);
+      margin-bottom: 1.5rem; gap: 0;
+    }
+    .tab-btn {
+      padding: .55rem 1.1rem; font-size: .85rem; font-weight: 700;
+      border: none; background: none; cursor: pointer;
+      color: #aaa; border-bottom: 2px solid transparent; margin-bottom: -2px;
+      font-family: inherit; transition: color .15s;
+    }
+    .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .tab-btn:hover:not(.active) { color: #555; }
+
+    /* ── Podgląd okładki ── */
+    #cover-preview {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover;
+      border-radius: var(--r); margin-top: .5rem;
+      border: 1px solid var(--border);
+    }
+
+    /* ── Podgląd galerii ── */
+    .imgs-grid {
+      display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem;
+    }
+    .imgs-grid img {
+      width: 80px; height: 60px; object-fit: cover;
+      border-radius: var(--r); border: 1px solid var(--border);
+    }
+
+    .img-hint { font-size: .75rem; color: #aaa; margin-top: .3rem; }
+
+    /* ── Lista projektów ── */
+    #project-list { display: flex; flex-direction: column; gap: .65rem; }
+    .admin-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .75rem 1rem;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--r);
+    }
+    .admin-item img,
+    .admin-item-thumb {
+      width: 56px; height: 42px; object-fit: cover;
+      border-radius: 4px; flex-shrink: 0;
+    }
+    .admin-item-thumb { background: var(--border); }
+    .admin-item-info { flex: 1; min-width: 0; }
+    .admin-item-info strong { display: block; font-size: .88rem; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .admin-item-info span  { font-size: .78rem; color: #aaa; }
+
+    .featured-label {
+      display: flex; align-items: center; gap: .3rem;
+      font-size: .85rem; cursor: pointer; flex-shrink: 0;
+      color: #aaa;
+    }
+    .featured-label input { cursor: pointer; accent-color: #2EA3F2; }
+
+    .btn-cancel {
+      padding: .7rem 1.2rem; border-radius: var(--r);
+      border: 1px solid var(--border); background: #fff;
+      color: #666; font-family: inherit; font-size: .88rem;
+      font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    .btn-cancel:hover { background: var(--border); }
+
+    .btn-edit {
+      background: none; border: 1px solid #93c5fd;
+      border-radius: var(--r); width: 32px; height: 32px;
+      cursor: pointer; display: grid; place-items: center;
+      flex-shrink: 0; transition: background .2s;
+    }
+    .btn-edit:hover { background: #eff6ff; }
+    .btn-edit svg { width: 14px; height: 14px; fill: none; stroke: #3b82f6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .btn-delete {
+      background: none; border: 1px solid #fca5a5;
+      border-radius: var(--r); width: 32px; height: 32px;
+      cursor: pointer; display: grid; place-items: center;
+      flex-shrink: 0; transition: background .2s;
+    }
+    .btn-delete:hover { background: #fef2f2; }
+    .btn-delete svg { width: 14px; height: 14px; fill: none; stroke: #ef4444; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .empty { color: #aaa; font-size: .85rem; padding: .5rem 0; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+
+    @media (max-width: 800px) {
+      .panel-grid { grid-template-columns: 1fr; }
+      .form-row   { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nawigacja -->
+<div class="topbar">
+  <span class="topbar-logo">Wen<span>ta</span> <span style="opacity:.4;font-weight:400">/ Admin</span></span>
+  <div class="topbar-right">
+    <a href="index.html">← Wróć na stronę</a>
+    <button id="btn-logout">Wyloguj</button>
+  </div>
+</div>
+
+<!-- ══ LOGOWANIE ══ -->
+<div id="login-screen">
+  <div class="login-box">
+    <h2>Panel administracyjny</h2>
+    <p>Wenta – zarządzanie projektami</p>
+    <div id="login-error" class="alert-error" hidden>Nieprawidłowe hasło.</div>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="pass">Hasło</label>
+        <input type="password" id="pass" placeholder="••••••••" required autofocus />
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%">Zaloguj</button>
+    </form>
+  </div>
+</div>
+
+<!-- ══ PANEL ══ -->
+<div id="admin-panel" hidden>
+  <div class="page">
+
+    <h2>Zarządzanie projektami</h2>
+    <div id="success-msg" class="alert-ok" hidden></div>
+
+    <div class="panel-grid">
+
+      <!-- ── Lewa kolumna: formularz ── -->
+      <div class="card-box">
+
+        <!-- Zakładki (widoczne tylko przy edycji) -->
+        <div id="edit-tabs" hidden>
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="tile">Kafelek</button>
+            <button class="tab-btn" data-tab="details">Szczegóły</button>
+          </div>
+        </div>
+
+        <!-- ── Formularz KAFELKA ── -->
+        <div id="section-tile">
+          <h3 id="tile-form-title">Dodaj projekt</h3>
+          <form id="tile-form">
+            <div class="form-group">
+              <label for="proj-title">Tytuł *</label>
+              <input type="text" id="proj-title" placeholder="np. Linia do przetwórstwa mleka" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="proj-cat">Branża *</label>
+                <input type="text" id="proj-cat" placeholder="np. Przemysł spożywczy" required />
+              </div>
+              <div class="form-group">
+                <label for="proj-year">Rok *</label>
+                <input type="number" id="proj-year" placeholder="2024" min="2000" max="2099" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="proj-cover">Zdjęcie okładki</label>
+              <input type="file" id="proj-cover" accept="image/*" />
+              <img id="cover-preview" hidden alt="Podgląd okładki" />
+              <p class="img-hint">Jedno zdjęcie wyświetlane na kafelku.</p>
+            </div>
+            <div style="display:flex;gap:.75rem;">
+              <button type="submit" id="tile-submit" class="btn-primary" style="flex:1">Dodaj projekt</button>
+              <button type="button" id="tile-cancel" class="btn-cancel" hidden>Anuluj</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ── Formularz SZCZEGÓŁÓW ── -->
+        <div id="section-details" hidden>
+          <h3>Szczegóły realizacji</h3>
+          <form id="details-form">
+            <div class="form-group">
+              <label for="proj-desc">Opis</label>
+              <textarea id="proj-desc" placeholder="Opis wyświetlany na stronie realizacji..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="proj-gallery">Zdjęcia galerii</label>
+              <input type="file" id="proj-gallery" accept="image/*" multiple />
+              <div id="gallery-preview" class="imgs-grid"></div>
+              <p class="img-hint">Możesz wybrać kilka zdjęć naraz. Zastąpią obecną galerię.</p>
+            </div>
+            <button type="submit" class="btn-primary" style="width:100%">Zapisz szczegóły</button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- ── Prawa kolumna: lista projektów ── -->
+      <div class="card-box">
+        <h3>Istniejące projekty</h3>
+        <div id="project-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/projects.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
