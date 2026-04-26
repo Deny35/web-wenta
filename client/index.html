@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <!-- Kodowanie znaków – wymagane dla polskich liter (ą, ę, ó itd.) -->
+  <meta charset="UTF-8" />
+
+  <!-- Responsive design – bez tego na telefonie strona wygląda jak powiększony desktop -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tytuł karty w przeglądarce -->
+  <title>Wenta – Instalacje ze stali nierdzewnej</title>
+
+  <!-- Preconnect – przeglądarka wcześniej nawiązuje połączenie z Google Fonts (szybsze ładowanie) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <!-- Ładujemy font Open Sans z Google Fonts (wagi 400=normalny, 600=semibold, 700=bold, 800=extrabold) -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Tutaj React "wstrzykuje" całą aplikację – wszystko renderuje się do tego div-a -->
+  <div id="root"></div>
+
+  <!-- Główny plik JS aplikacji React – Vite automatycznie go bundluje -->
+  <!-- type="module" – przeglądarka traktuje plik jako nowoczesny moduł ES6 -->
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

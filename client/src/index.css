@@ -1,0 +1,15 @@
+/* ── Dyrektywy Tailwind CSS ── */
+/* Te trzy linie to "magia" Tailwind – bez nich klasy jak bg-brand czy text-sm nie działają */
+
+@tailwind base;       /* Resetuje domyślne style przeglądarki (marginesy, padding itp.) */
+@tailwind components; /* Wczytuje gotowe komponenty Tailwind (rzadko używane bezpośrednio) */
+@tailwind utilities;  /* Wczytuje wszystkie klasy pomocnicze: flex, p-4, text-white itd. */
+
+/* ── Własne style globalne ── */
+@layer base {
+  /* scroll-behavior: smooth – przy kliknięciu w #o-firmie strona płynnie przewija, nie skacze */
+  html { scroll-behavior: smooth; }
+
+  /* Ustawiamy font dla całej strony – Open Sans załadowany z Google Fonts w index.html */
+  body { font-family: 'Open Sans', sans-serif; }
+}
