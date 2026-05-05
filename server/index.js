@@ -120,9 +120,11 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'set' : 'NOT SET');
+
 init().then(() => {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }).catch(e => {
-  console.error('DB init failed:', e.message);
+  console.error('DB init failed:', e.message, e.stack);
   process.exit(1);
 });
