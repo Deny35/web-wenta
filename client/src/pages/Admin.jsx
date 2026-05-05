@@ -20,8 +20,8 @@ function LoginScreen({ onLogin }) {
       const { token } = await api.login(pass);
       sessionStorage.setItem('wenta_token', token);
       onLogin();
-    } catch {
-      setError('Nieprawidłowe hasło.');
+    } catch (e) {
+      setError(e.message || 'Nieprawidłowe hasło.');
       setPass('');
     }
   }
