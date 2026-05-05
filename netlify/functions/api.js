@@ -9,14 +9,15 @@ const CORS = {
 
 function ok(body)        { return { statusCode: 200, headers: CORS, body: JSON.stringify(body) }; }
 function fail(code, msg) { return { statusCode: code, headers: CORS, body: JSON.stringify({ error: msg }) }; }
-function authOk(headers) { return headers['x-admin-token'] === ADMIN_PASSWORD; }
+function authOk(h)       { return h['x-admin-token'] === ADMIN_PASSWORD; }
 
 exports.handler = async function(event) {
   try {
     if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
 
     const method = event.httpMethod;
-    const path   = (event.path || '').replace('/.netlify/functions/api', '') || '/';
+    const qs     = event.queryStringParameters || {};
+    const path   = qs.p || '/';
     const body   = event.body ? JSON.parse(event.body) : {};
 
     // Auth
