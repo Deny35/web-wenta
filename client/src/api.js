@@ -1,4 +1,4 @@
-const BASE = '/api';
+const BASE = import.meta.env.PROD ? '/.netlify/functions/api' : '/api';
 
 function authHeaders() {
   const token = sessionStorage.getItem('wenta_token');
