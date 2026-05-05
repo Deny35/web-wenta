@@ -1,6 +1,3 @@
-import { useState, useEffect } from 'react';
-import { api } from './api';
-
 export const DEFAULTS = {
   hero_label:        'Producent wyrobów ze stali nierdzewnej od 1993 roku',
   hero_title:        'Stal nierdzewna\nod projektu do montażu',
@@ -22,31 +19,7 @@ export const DEFAULTS = {
   contact_hours:     'Pon–Pt, 7:00–15:00',
 };
 
-let cache = null;
-let promise = null;
-
 export function useContent() {
-  const [content, setContent] = useState(cache || {});
-
-  useEffect(() => {
-    if (cache) { setContent(cache); return; }
-    if (!promise) promise = api.content.get();
-    promise.then(data => {
-      cache = data;
-      setContent(data);
-    }).catch(() => {
-      cache = {};
-    });
-  }, []);
-
-  function c(key) {
-    return (content[key] !== undefined && content[key] !== '') ? content[key] : (DEFAULTS[key] || '');
-  }
-
-  return { c, raw: content };
-}
-
-export function clearContentCache() {
-  cache = null;
-  promise = null;
+  function c(key) { return DEFAULTS[key] || ''; }
+  return { c, raw: DEFAULTS };
 }
