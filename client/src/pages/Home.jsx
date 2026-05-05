@@ -14,7 +14,7 @@ const Label = ({ children }) => (
 
 const SLIDES = [
   {
-    bg:    '/Spawacz.png',
+    bg:    '/Spawacz.jpg',
     label: 'Od 1993 roku',
     title: 'Produkcja instalacji\ntechnologicznych',
     desc:  'Dla wygody naszych Klientów zajmujemy się dostawą, rozładunkiem oraz montażem na miejscu.',
@@ -22,7 +22,7 @@ const SLIDES = [
     cta2:  { label: 'Kontakt',          href: '/kontakt'  },
   },
   {
-    bg:    '/Inzynier.png',
+    bg:    '/Inzynier.jpg',
     label: 'Kompleksowo',
     title: 'Izolacje, projektowanie 3D,\nobróbka stali, relokacja maszyn',
     desc:  'Dedykowane rozwiązania technologiczne dopasowane do potrzeb Twojej firmy.',
@@ -30,7 +30,7 @@ const SLIDES = [
     cta2:  { label: 'Kontakt',      href: '/kontakt' },
   },
   {
-    bg:    '/Instalacja.png',
+    bg:    '/Instalacja.jpg',
     label: 'Stal nierdzewna',
     title: 'Maszyny i urządzenia\ndla przemysłu spożywczego',
     desc:  'Produkujemy i montujemy maszyny spełniające normy EHEDG i GMP. Jakość potwierdzona certyfikatami.',
