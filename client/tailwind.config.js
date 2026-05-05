@@ -9,9 +9,10 @@ export default {
     extend: {
       // Dodajemy własne kolory dostępne jako klasy Tailwind (np. bg-brand, text-orange)
       colors: {
-        brand:  '#2EA3F2', // Niebieski – główny kolor marki (przyciski, akcenty)
+        brand:  '#e03030', // Czerwony – przyciski
+        accent: '#e03030', // Czerwień – etykiety, ikony, akcenty
         orange: '#E35B1C', // Pomarańczowy – kolor CTA (wezwanie do działania)
-        dark:   '#1a2633'  // Ciemnogranatowy – tło headera, hero, footera
+        dark:   '#0d1520'  // Ciemnogranatowy – tło headera, hero, footera
       },
       // Zastępujemy domyślny font Tailwind naszym Open Sans
       fontFamily: {

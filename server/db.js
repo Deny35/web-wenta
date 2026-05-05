@@ -1,4 +1,3 @@
-/* Supabase REST API client */
 require('dotenv').config();
 
 const BASE = process.env.SUPABASE_URL + '/rest/v1';
@@ -11,7 +10,6 @@ const HEADERS = {
   'Prefer':        'return=representation'
 };
 
-// Zwykłe zapytanie (GET / POST / PATCH / DELETE)
 async function req(method, path, body) {
   const res = await fetch(BASE + path, {
     method,
@@ -26,7 +24,6 @@ async function req(method, path, body) {
   return text ? JSON.parse(text) : [];
 }
 
-// Upsert – wstawia lub nadpisuje istniejący rekord (na podstawie klucza głównego)
 async function upsert(path, body) {
   const res = await fetch(BASE + path, {
     method: 'POST',

@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
         <div className="max-w-3xl mx-auto px-6 py-16">
 
           {/* Link powrotu – React Router, bez przeładowania strony */}
-          <Link to="/" className="text-sm font-semibold text-brand hover:underline inline-block mb-8">
+          <Link to="/" className="text-sm font-semibold text-accent hover:underline inline-block mb-8">
             ← Wróć na stronę główną
           </Link>
 
@@ -28,7 +28,7 @@ export default function PrivacyPolicy() {
 
             <div>
               <h2 className="text-base font-bold text-slate-800 mb-2">1. Administrator danych osobowych</h2>
-              <p>Administratorem danych osobowych jest firma <strong>Wenta</strong>, ul. Przykładowa 1, 00-000 Miasto, e-mail: <a href="mailto:biuro@wenta.pl" className="text-brand">biuro@wenta.pl</a>, tel.: +48 000 000 000.</p>
+              <p>Administratorem danych osobowych jest firma <strong>Wenta</strong>, ul. Przykładowa 1, 00-000 Miasto, e-mail: <a href="mailto:biuro@wenta.pl" className="text-accent">biuro@wenta.pl</a>, tel.: +48 000 000 000.</p>
             </div>
 
             <div>
@@ -70,7 +70,7 @@ export default function PrivacyPolicy() {
                 <li>prawo sprzeciwu wobec przetwarzania,</li>
                 <li>prawo wniesienia skargi do Prezesa UODO (ul. Stawki 2, 00-193 Warszawa).</li>
               </ul>
-              <p className="mt-2">Aby skorzystać z praw, skontaktuj się z nami: <a href="mailto:biuro@wenta.pl" className="text-brand">biuro@wenta.pl</a>.</p>
+              <p className="mt-2">Aby skorzystać z praw, skontaktuj się z nami: <a href="mailto:biuro@wenta.pl" className="text-accent">biuro@wenta.pl</a>.</p>
             </div>
 
             <div>

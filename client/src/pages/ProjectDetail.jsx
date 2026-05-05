@@ -49,7 +49,7 @@ export default function ProjectDetail() {
       <Header />
       <div className="pt-16 min-h-screen flex flex-col items-center justify-center gap-4">
         <p className="text-slate-600 font-semibold">Nie znaleziono realizacji.</p>
-        <Link to="/projekty" className="text-brand hover:underline">← Wróć do listy</Link>
+        <Link to="/projekty" className="text-accent hover:underline">← Wróć do listy</Link>
       </div>
     </>
   );
@@ -64,11 +64,11 @@ export default function ProjectDetail() {
         <div className="max-w-4xl mx-auto px-6 py-12">
 
           {/* Link powrotu do listy projektów */}
-          <Link to="/projekty" className="text-brand hover:underline text-sm">← Wróć do projektów</Link>
+          <Link to="/projekty" className="text-accent hover:underline text-sm">← Wróć do projektów</Link>
 
           {/* Branża i rok – małe tagi pod linkiem powrotu */}
           <div className="flex flex-wrap gap-2 text-xs mt-4 mb-2">
-            <span className="px-2 py-0.5 bg-blue-50 text-brand rounded font-semibold">{project.category}</span>
+            <span className="px-2 py-0.5 bg-blue-50 text-accent rounded font-semibold">{project.category}</span>
             <span className="text-slate-400">{project.year}</span>
           </div>
 

@@ -13,7 +13,7 @@ export default function Contact() {
         {/* Hero sekcji */}
         <div className="bg-dark py-16">
           <div className="max-w-5xl mx-auto px-6">
-            <span className="text-xs font-bold tracking-widest uppercase text-brand">Kontakt</span>
+            <span className="text-xs font-bold tracking-widest uppercase text-accent">Kontakt</span>
             <h1 className="mt-2 text-4xl font-extrabold text-white">Napisz lub zadzwoń</h1>
             <p className="mt-3 text-white/60 max-w-xl leading-relaxed">
               Jesteśmy do dyspozycji w godzinach pracy. Odpiszemy na każde zapytanie.
@@ -44,18 +44,18 @@ export default function Contact() {
               ].map(item => (
                 <div key={item.label} className="flex gap-4 items-start">
                   <div className="w-12 h-12 rounded-xl bg-blue-50 grid place-items-center flex-shrink-0">
-                    <svg className="w-5 h-5 fill-brand" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: item.icon }} />
+                    <svg className="w-5 h-5 fill-accent" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: item.icon }} />
                   </div>
                   <div>
                     <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-0.5">{item.label}</p>
-                    <a href={item.href} className="text-slate-800 font-semibold hover:text-brand transition-colors">{item.value}</a>
+                    <a href={item.href} className="text-slate-800 font-semibold hover:text-accent transition-colors">{item.value}</a>
                   </div>
                 </div>
               ))}
 
               <div className="flex gap-4 items-start">
                 <div className="w-12 h-12 rounded-xl bg-blue-50 grid place-items-center flex-shrink-0">
-                  <svg className="w-5 h-5 fill-brand" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <svg className="w-5 h-5 fill-accent" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-0.5">Adres</p>
@@ -65,7 +65,7 @@ export default function Contact() {
 
               <div className="flex gap-4 items-start">
                 <div className="w-12 h-12 rounded-xl bg-blue-50 grid place-items-center flex-shrink-0">
-                  <svg className="w-5 h-5 fill-brand" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <svg className="w-5 h-5 fill-accent" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-0.5">Godziny pracy</p>

@@ -30,7 +30,7 @@ const SERVICES = [
   {
     icon: '<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',
     title: 'Instalacje procesowe',
-    desc: 'Kompleksowe instalacje procesowe ze stali nierdzewnej dla różnych gałęzi przemysłu – spożywczego, chemicznego i farmaceutycznego.',
+    desc: 'Kompleksowe instalacje procesowe ze stali nierdzewnej dla różnych gałęzi przemysłu – spożywczego i chemicznego.',
   },
   {
     icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>',
@@ -50,10 +50,9 @@ export default function Services() {
       <Header />
       <div className="min-h-screen">
 
-        {/* Hero sekcji */}
         <div className="bg-dark py-16">
           <div className="max-w-5xl mx-auto px-6">
-            <span className="text-xs font-bold tracking-widest uppercase text-brand">Co oferujemy</span>
+            <span className="text-xs font-bold tracking-widest uppercase text-accent">Co oferujemy</span>
             <h1 className="mt-2 text-4xl font-extrabold text-white">Nasze usługi</h1>
             <p className="mt-3 text-white/60 max-w-xl leading-relaxed">
               Realizujemy projekty kompleksowo – od koncepcji, przez produkcję, po montaż i serwis. Każdy etap wykonujemy samodzielnie we własnym zakładzie.
@@ -61,13 +60,12 @@ export default function Services() {
           </div>
         </div>
 
-        {/* Lista usług */}
         <div className="max-w-5xl mx-auto px-6 py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {SERVICES.map(s => (
-              <div key={s.title} className="flex gap-5 p-6 bg-white border border-slate-200 border-l-4 border-l-brand rounded-r-xl hover:shadow-lg transition-shadow">
+              <div key={s.title} className="flex gap-5 p-6 bg-white border border-slate-200 border-l-4 border-l-accent rounded-r-xl hover:shadow-lg transition-shadow">
                 <div className="flex-shrink-0 w-12 h-12 bg-blue-50 rounded-xl grid place-items-center">
-                  <svg className="w-6 h-6 fill-brand" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: s.icon }} />
+                  <svg className="w-6 h-6 fill-accent" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: s.icon }} />
                 </div>
                 <div>
                   <h2 className="font-bold text-slate-800 mb-2">{s.title}</h2>
@@ -77,14 +75,13 @@ export default function Services() {
             ))}
           </div>
 
-          {/* CTA */}
           <div className="mt-14 bg-dark rounded-2xl p-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-2xl font-extrabold text-white">Potrzebujesz wyceny?</h3>
-              <p className="text-white/50 mt-1 text-sm">Skontaktuj się z nami – odpiszemy w ciągu 24 godzin.</p>
+              <p className="text-white/50 mt-1 text-sm">Skontaktuj się z nami.</p>
             </div>
             <a href="/kontakt" className="flex-shrink-0 px-8 py-3 rounded-lg bg-brand text-white font-bold text-sm hover:opacity-90 transition-opacity">
-              Napisz do nas →
+              Kontakt →
             </a>
           </div>
         </div>
