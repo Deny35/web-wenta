@@ -20,23 +20,25 @@ exports.handler = async function(event) {
     const path   = qs.p || '/';
     const body   = event.body ? JSON.parse(event.body) : {};
 
-    // Auth
     if (path === '/auth/login' && method === 'POST') {
       if (body.password === ADMIN_PASSWORD) return ok({ token: ADMIN_PASSWORD });
       return fail(401, 'Nieprawidłowe hasło');
     }
 
     const { getStore } = require('@netlify/blobs');
-    const store = getStore('wenta');
+    const store = getStore({
+      name:   'wenta',
+      siteID: process.env.SITE_ID,
+      token:  process.env.NETLIFY_TOKEN,
+    });
 
     async function getList(key)       { return (await store.get(key, { type: 'json' })) || []; }
     async function setList(key, data) { await store.set(key, JSON.stringify(data)); }
 
-    // Projects
-    const projId = (path.match(/^\/projects\/(\d+)/) || [])[1];
+    const projId   = (path.match(/^\/projects\/(\d+)/) || [])[1];
+    const clientId = (path.match(/^\/clients\/(\d+)/)  || [])[1];
 
     if (path === '/projects' && method === 'GET')  return ok(await getList('projects'));
-
     if (path === '/projects' && method === 'POST') {
       if (!authOk(event.headers)) return fail(401, 'Unauthorized');
       const list = await getList('projects');
@@ -61,11 +63,7 @@ exports.handler = async function(event) {
       return ok({ ok: true });
     }
 
-    // Clients
-    const clientId = (path.match(/^\/clients\/(\d+)/) || [])[1];
-
     if (path === '/clients' && method === 'GET')  return ok(await getList('clients'));
-
     if (path === '/clients' && method === 'POST') {
       if (!authOk(event.headers)) return fail(401, 'Unauthorized');
       const list = await getList('clients');
@@ -81,7 +79,6 @@ exports.handler = async function(event) {
       return ok({ ok: true });
     }
 
-    // Content
     if (path === '/content' && method === 'GET')  return ok((await store.get('content', { type: 'json' })) || {});
     if (path === '/content' && method === 'PUT') {
       if (!authOk(event.headers)) return fail(401, 'Unauthorized');
@@ -90,7 +87,6 @@ exports.handler = async function(event) {
     }
 
     return fail(404, 'Not found: ' + path);
-
   } catch (e) {
     return fail(500, e.message);
   }
