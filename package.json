@@ -8,6 +8,9 @@
     "preview": "npm run preview --workspace=client",
     "server": "npm run dev --workspace=server"
   },
+  "dependencies": {
+    "@netlify/blobs": "^8.0.0"
+  },
   "devDependencies": {
     "concurrently": "^8.0.0"
   }
