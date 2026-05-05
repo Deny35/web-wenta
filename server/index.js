@@ -1,10 +1,9 @@
 const express = require('express');
 const cors    = require('cors');
 const path    = require('path');
-
 require('dotenv').config();
 
-const { req, upsert } = require('./db');
+const { query, init } = require('./db');
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
@@ -13,87 +12,104 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'wenta2025';
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-
-function requireAuth(request, res, next) {
-  if (request.headers['x-admin-token'] === ADMIN_PASSWORD) return next();
+function requireAuth(req, res, next) {
+  if (req.headers['x-admin-token'] === ADMIN_PASSWORD) return next();
   res.status(401).json({ error: 'Unauthorized' });
 }
 
-
-app.post('/api/auth/login', (request, res) => {
-  if (request.body.password === ADMIN_PASSWORD) {
+app.post('/api/auth/login', (req, res) => {
+  if (req.body.password === ADMIN_PASSWORD) {
     res.json({ token: ADMIN_PASSWORD });
   } else {
     res.status(401).json({ error: 'Nieprawidłowe hasło' });
   }
 });
 
-
+// Projects
 app.get('/api/projects', async (_, res) => {
   try {
-    const rows = await req('GET', '/projects?order=id');
+    const rows = await query('SELECT * FROM projects ORDER BY id');
     res.json(rows);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.post('/api/projects', requireAuth, async (request, res) => {
+app.post('/api/projects', requireAuth, async (req, res) => {
   try {
-    const rows = await req('POST', '/projects', request.body);
-    res.json(Array.isArray(rows) ? rows[0] : rows);
+    const { title, category, year, img, images, opis, short_desc, featured } = req.body;
+    const id = Date.now();
+    const rows = await query(
+      `INSERT INTO projects (id, title, category, year, img, images, opis, short_desc, featured)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
+      [id, title, category, year, img || '', JSON.stringify(images || []), opis || '', short_desc || '', featured || false]
+    );
+    res.json(rows[0]);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.put('/api/projects/:id', requireAuth, async (request, res) => {
+app.put('/api/projects/:id', requireAuth, async (req, res) => {
   try {
-    const rows = await req('PATCH', `/projects?id=eq.${request.params.id}`, request.body);
-    res.json(Array.isArray(rows) ? rows[0] : rows);
+    const id = Number(req.params.id);
+    const fields = req.body;
+    const keys   = Object.keys(fields);
+    const values = keys.map(k => k === 'images' ? JSON.stringify(fields[k]) : fields[k]);
+    const set    = keys.map((k, i) => `${k} = $${i + 2}`).join(', ');
+    const rows   = await query(`UPDATE projects SET ${set} WHERE id = $1 RETURNING *`, [id, ...values]);
+    res.json(rows[0]);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.delete('/api/projects/:id', requireAuth, async (request, res) => {
+app.delete('/api/projects/:id', requireAuth, async (req, res) => {
   try {
-    await req('DELETE', `/projects?id=eq.${request.params.id}`);
+    await query('DELETE FROM projects WHERE id = $1', [Number(req.params.id)]);
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-
+// Clients
 app.get('/api/clients', async (_, res) => {
   try {
-    const rows = await req('GET', '/clients?order=id');
+    const rows = await query('SELECT * FROM clients ORDER BY id');
     res.json(rows);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.post('/api/clients', requireAuth, async (request, res) => {
+app.post('/api/clients', requireAuth, async (req, res) => {
   try {
-    const rows = await req('POST', '/clients', { name: request.body.name, logo: request.body.logo || '' });
-    res.json(Array.isArray(rows) ? rows[0] : rows);
+    const id   = Date.now();
+    const rows = await query(
+      'INSERT INTO clients (id, name, logo) VALUES ($1,$2,$3) RETURNING *',
+      [id, req.body.name, req.body.logo || '']
+    );
+    res.json(rows[0]);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.delete('/api/clients/:id', requireAuth, async (request, res) => {
+app.delete('/api/clients/:id', requireAuth, async (req, res) => {
   try {
-    await req('DELETE', `/clients?id=eq.${request.params.id}`);
+    await query('DELETE FROM clients WHERE id = $1', [Number(req.params.id)]);
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-
+// Content
 app.get('/api/content', async (_, res) => {
   try {
-    const rows = await req('GET', '/site_content?order=key');
-    const obj = {};
+    const rows = await query('SELECT key, value FROM site_content');
+    const obj  = {};
     rows.forEach(r => { obj[r.key] = r.value; });
     res.json(obj);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.put('/api/content', requireAuth, async (request, res) => {
+app.put('/api/content', requireAuth, async (req, res) => {
   try {
-    const entries = Object.entries(request.body).map(([key, value]) => ({ key, value: String(value) }));
-    const result = await upsert('/site_content', entries);
-    res.json(result);
+    for (const [key, value] of Object.entries(req.body)) {
+      await query(
+        'INSERT INTO site_content (key, value) VALUES ($1,$2) ON CONFLICT (key) DO UPDATE SET value = $2',
+        [key, String(value)]
+      );
+    }
+    res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -104,4 +120,9 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+init().then(() => {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}).catch(e => {
+  console.error('DB init failed:', e.message);
+  process.exit(1);
+});

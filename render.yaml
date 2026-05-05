@@ -9,7 +9,12 @@ services:
         value: production
       - key: ADMIN_PASSWORD
         sync: false
-      - key: SUPABASE_URL
-        sync: false
-      - key: SUPABASE_KEY
-        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: wenta-db
+          property: connectionString
+
+databases:
+  - name: wenta-db
+    databaseName: wenta
+    user: wenta

@@ -1,41 +1,38 @@
-require('dotenv').config();
+const { Pool } = require('pg');
 
-const BASE = process.env.SUPABASE_URL + '/rest/v1';
-const KEY  = process.env.SUPABASE_KEY;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+});
 
-const HEADERS = {
-  'apikey':        KEY,
-  'Authorization': 'Bearer ' + KEY,
-  'Content-Type':  'application/json',
-  'Prefer':        'return=representation'
-};
-
-async function req(method, path, body) {
-  const res = await fetch(BASE + path, {
-    method,
-    headers: HEADERS,
-    body: body ? JSON.stringify(body) : undefined
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || err.details || res.status);
-  }
-  const text = await res.text();
-  return text ? JSON.parse(text) : [];
+async function query(sql, params) {
+  const { rows } = await pool.query(sql, params);
+  return rows;
 }
 
-async function upsert(path, body) {
-  const res = await fetch(BASE + path, {
-    method: 'POST',
-    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates,return=representation' },
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || err.details || res.status);
-  }
-  const text = await res.text();
-  return text ? JSON.parse(text) : [];
+async function init() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS projects (
+      id         BIGINT PRIMARY KEY,
+      title      TEXT,
+      category   TEXT,
+      year       TEXT,
+      img        TEXT,
+      images     JSONB DEFAULT '[]',
+      opis       TEXT DEFAULT '',
+      short_desc TEXT DEFAULT '',
+      featured   BOOLEAN DEFAULT false
+    );
+    CREATE TABLE IF NOT EXISTS clients (
+      id   BIGINT PRIMARY KEY,
+      name TEXT,
+      logo TEXT DEFAULT ''
+    );
+    CREATE TABLE IF NOT EXISTS site_content (
+      key   TEXT PRIMARY KEY,
+      value TEXT
+    );
+  `);
 }
 
-module.exports = { req, upsert };
+module.exports = { query, init };
