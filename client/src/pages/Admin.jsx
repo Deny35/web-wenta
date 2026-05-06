@@ -342,10 +342,9 @@ function ProjectsSection({ showSuccess }) {
       <div className="bg-white border border-slate-200 rounded-xl p-6">
         <h3 className="text-base font-bold text-slate-800 mb-4">Istniejące projekty</h3>
         {loading ? (
-          <div className="flex flex-col gap-2">
-            {[1,2,3].map(i => (
-              <div key={i} className="h-16 bg-slate-100 rounded-lg animate-pulse" />
-            ))}
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <img src="/Projekt bez nazwy-4.png" alt="Wenta" className="w-24 animate-pulse opacity-60" />
+            <p className="text-xs text-slate-400 font-semibold uppercase tracking-widest">Ładowanie…</p>
           </div>
         ) : !projects.length && <p className="text-sm text-slate-400">Brak projektów.</p>}
 

@@ -25,7 +25,12 @@ export default function Projects() {
           <span className="text-xs font-bold tracking-widest uppercase text-accent">Realizacje</span>
           <h1 className="mt-1 mb-10 text-3xl font-extrabold text-slate-800">Wszystkie projekty</h1>
 
-          {loading && <p className="text-slate-400">Ładowanie…</p>}
+          {loading && (
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+              <img src="/Projekt bez nazwy-4.png" alt="Wenta" className="w-32 animate-pulse opacity-60" />
+              <p className="text-xs text-slate-400 font-semibold uppercase tracking-widest">Ładowanie…</p>
+            </div>
+          )}
 
           {!loading && !projects.length && (
             <p className="text-slate-400">Brak projektów.</p>

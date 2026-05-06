@@ -10,4 +10,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </BrowserRouter>
 );
 
-if (window.__hideSplash) window.__hideSplash();

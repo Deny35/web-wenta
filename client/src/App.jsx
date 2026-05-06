@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home          from './pages/Home';
 import Projects      from './pages/Projects';
@@ -8,6 +9,10 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Admin         from './pages/Admin';
 
 export default function App() {
+  useEffect(() => {
+    if (window.__hideSplash) window.__hideSplash();
+  }, []);
+
   return (
     <Routes>
       <Route path="/"                     element={<Home />} />
