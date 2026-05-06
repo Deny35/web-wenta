@@ -92,11 +92,14 @@ function ProjectsSection({ showSuccess }) {
 
   const galleryRef = useRef();
 
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving]   = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function refresh() {
+    setLoading(true);
     const list = await api.projects.list();
     setProjects(list);
+    setLoading(false);
   }
 
   useEffect(() => { refresh(); }, []);
@@ -338,7 +341,13 @@ function ProjectsSection({ showSuccess }) {
 
       <div className="bg-white border border-slate-200 rounded-xl p-6">
         <h3 className="text-base font-bold text-slate-800 mb-4">Istniejące projekty</h3>
-        {!projects.length && <p className="text-sm text-slate-400">Brak projektów.</p>}
+        {loading ? (
+          <div className="flex flex-col gap-2">
+            {[1,2,3].map(i => (
+              <div key={i} className="h-16 bg-slate-100 rounded-lg animate-pulse" />
+            ))}
+          </div>
+        ) : !projects.length && <p className="text-sm text-slate-400">Brak projektów.</p>}
 
         <div className="flex flex-col gap-2">
           {projects.map(p => (
