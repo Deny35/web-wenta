@@ -117,6 +117,22 @@ export default function ProductDetail() {
                 <p className="text-slate-400 italic">Brak opisu produktu.</p>
               )}
 
+              {Array.isArray(product.specs) && product.specs.filter(r => r.key || r.value).length > 0 && (
+                <div className="mt-8">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Specyfikacja techniczna</h3>
+                  <table className="w-full text-sm border-collapse">
+                    <tbody>
+                      {product.specs.filter(r => r.key || r.value).map((row, i) => (
+                        <tr key={i} className={i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}>
+                          <td className="py-2 px-3 font-semibold text-slate-600 border border-slate-100 w-1/2">{row.key}</td>
+                          <td className="py-2 px-3 text-slate-800 border border-slate-100">{row.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
               <div className="mt-8 pt-8 border-t border-slate-100">
                 <a
                   href="/kontakt"

@@ -40,9 +40,11 @@ async function init() {
       opis       TEXT DEFAULT '',
       img        TEXT DEFAULT '',
       images     JSONB DEFAULT '[]',
+      specs      JSONB DEFAULT '[]',
       featured   BOOLEAN DEFAULT false,
       sort_order INT DEFAULT 0
     );
+    ALTER TABLE products ADD COLUMN IF NOT EXISTS specs JSONB DEFAULT '[]';
   `);
 }
 

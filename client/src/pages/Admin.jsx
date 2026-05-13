@@ -413,6 +413,7 @@ function ProductsSection({ showSuccess }) {
   const [opis, setOpis]               = useState('');
   const [coverData, setCoverData]     = useState('');
   const [galleryData, setGalleryData] = useState([]);
+  const [specs, setSpecs]             = useState([]);
 
   const coverRef   = useRef();
   const galleryRef = useRef();
@@ -432,7 +433,7 @@ function ProductsSection({ showSuccess }) {
   function reset() {
     setEditingId(null); setTab('tile');
     setTitle(''); setCategory(''); setShortDesc(''); setOpis('');
-    setCoverData(''); setGalleryData([]);
+    setCoverData(''); setGalleryData([]); setSpecs([]);
     if (coverRef.current)   coverRef.current.value   = '';
     if (galleryRef.current) galleryRef.current.value = '';
   }
@@ -443,6 +444,7 @@ function ProductsSection({ showSuccess }) {
     setShortDesc(p.short_desc || ''); setOpis(p.opis || '');
     setCoverData(p.img || '');
     setGalleryData(Array.isArray(p.images) ? p.images.slice() : []);
+    setSpecs(Array.isArray(p.specs) ? p.specs.slice() : []);
   }
 
   async function handleCoverChange(e) {
@@ -494,6 +496,33 @@ function ProductsSection({ showSuccess }) {
     setSaving(false);
   }
 
+  async function saveSpecs(e) {
+    e.preventDefault();
+    if (!editingId) return;
+    setSaving(true);
+    try {
+      const clean = specs.filter(r => r.key.trim() || r.value.trim());
+      await api.products.update(editingId, { specs: clean });
+      showSuccess('Specyfikacja zaktualizowana!');
+      await refresh();
+    } catch (err) {
+      alert('Błąd zapisu: ' + err.message);
+    }
+    setSaving(false);
+  }
+
+  function addSpecRow() {
+    setSpecs(s => [...s, { key: '', value: '' }]);
+  }
+
+  function updateSpec(i, field, val) {
+    setSpecs(s => s.map((r, idx) => idx === i ? { ...r, [field]: val } : r));
+  }
+
+  function removeSpec(i) {
+    setSpecs(s => s.filter((_, idx) => idx !== i));
+  }
+
   async function deleteProduct(id) {
     if (!confirm('Usunąć produkt?')) return;
     if (editingId === id) reset();
@@ -516,7 +545,7 @@ function ProductsSection({ showSuccess }) {
 
         {isEditing && (
           <div className="flex border-b-2 border-slate-100 mb-5 gap-0">
-            {['tile', 'details'].map(t => (
+            {[['tile','Podstawowe'], ['details','Szczegóły'], ['specs','Specyfikacja']].map(([t, label]) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -524,7 +553,7 @@ function ProductsSection({ showSuccess }) {
                   tab === t ? 'text-brand border-brand' : 'text-slate-400 border-transparent hover:text-slate-600'
                 }`}
               >
-                {t === 'tile' ? 'Podstawowe' : 'Szczegóły'}
+                {label}
               </button>
             ))}
           </div>
@@ -622,6 +651,56 @@ function ProductsSection({ showSuccess }) {
               className="w-full px-4 py-2.5 bg-brand text-white font-bold rounded text-sm hover:opacity-90 transition-opacity disabled:opacity-60"
             >
               {saving ? 'Zapisywanie…' : 'Zapisz szczegóły'}
+            </button>
+          </form>
+        )}
+
+        {isEditing && tab === 'specs' && (
+          <form onSubmit={saveSpecs}>
+            <h3 className="text-base font-bold text-slate-800 mb-4">Specyfikacja techniczna</h3>
+            <p className="text-xs text-slate-400 mb-4">Tabela widoczna na stronie produktu pod opisem.</p>
+
+            <div className="flex flex-col gap-2 mb-4">
+              {specs.map((row, i) => (
+                <div key={i} className="flex gap-2 items-center">
+                  <input
+                    value={row.key}
+                    onChange={e => updateSpec(i, 'key', e.target.value)}
+                    className="flex-1 px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand"
+                    placeholder="Parametr (np. Pojemność)"
+                  />
+                  <input
+                    value={row.value}
+                    onChange={e => updateSpec(i, 'value', e.target.value)}
+                    className="flex-1 px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand"
+                    placeholder="Wartość (np. 1000 L)"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeSpec(i)}
+                    className="w-8 h-8 flex-shrink-0 border border-red-200 rounded grid place-items-center hover:bg-red-50 transition-colors"
+                  >
+                    <svg className="w-3.5 h-3.5 stroke-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={addSpecRow}
+              className="w-full mb-4 px-4 py-2 border-2 border-dashed border-slate-200 rounded text-sm text-slate-400 hover:border-brand hover:text-brand transition-colors"
+            >
+              + Dodaj wiersz
+            </button>
+
+            <button
+              type="submit" disabled={saving}
+              className="w-full px-4 py-2.5 bg-brand text-white font-bold rounded text-sm hover:opacity-90 transition-opacity disabled:opacity-60"
+            >
+              {saving ? 'Zapisywanie…' : 'Zapisz specyfikację'}
             </button>
           </form>
         )}
