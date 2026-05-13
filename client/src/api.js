@@ -46,6 +46,27 @@ export const api = {
     }).then(handle),
   },
 
+  services: {
+    list: () => fetch(`${BASE}/services`).then(handle),
+
+    add: (data) => fetch(`${BASE}/services`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(data)
+    }).then(handle),
+
+    update: (id, data) => fetch(`${BASE}/services/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(data)
+    }).then(handle),
+
+    remove: (id) => fetch(`${BASE}/services/${id}`, {
+      method: 'DELETE',
+      headers: authHeaders()
+    }).then(handle),
+  },
+
   products: {
     list: () => fetch(`${BASE}/products`).then(handle),
     get: (id) => fetch(`${BASE}/products/${id}`).then(handle),

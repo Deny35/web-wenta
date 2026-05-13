@@ -333,11 +333,13 @@ export default function Home() {
   const [clients,           setClients]           = useState([]);
   const [featuredProducts,  setFeaturedProducts]  = useState([]);
   const [productsExpanded,  setProductsExpanded]  = useState(false);
+  const [homeServices,      setHomeServices]       = useState([]);
 
   useEffect(() => {
     api.projects.list().then(list => setFeatured(list.filter(p => p.featured).slice(0, 3)));
     api.clients.list().then(setClients);
     api.products.list().then(list => setFeaturedProducts(list.filter(p => p.featured)));
+    api.services.list().then(setHomeServices);
   }, []);
 
   return (
@@ -406,25 +408,20 @@ export default function Home() {
             <Label>Usługi</Label>
             <h2 className="mt-1 mb-10 text-3xl font-extrabold text-white">Od projektu do serwisu</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 rounded-2xl overflow-hidden">
-              {[
-                { title: 'Projektowanie 3D',       desc: 'Projekty P&ID, rysunki warsztatowe, wizualizacje 3D.',         img: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?w=600&q=80' },
-                { title: 'Obróbka i spawanie',     desc: 'Cięcie laserowe, CNC, spawanie TIG orbitalne.',                img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80' },
-                { title: 'Izolacje techniczne',    desc: 'Izolacje termiczne rurociągów i zbiorników.',                  img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80' },
-                { title: 'Maszyny spożywcze',      desc: 'Produkcja maszyn dla branży spożywczej.',                      img: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80' },
-                { title: 'Instalacje procesowe',   desc: 'Instalacje ze stali nierdzewnej dla przemysłu.',               img: 'https://images.unsplash.com/photo-1513828583688-c52646db42da?w=600&q=80' },
-                { title: 'Transport wewnętrzny',   desc: 'Przenośniki, rurociągi, instalacje pneumatyczne.',             img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=600&q=80' },
-                { title: 'Montaż linii',           desc: 'Kompletne linie od spawania po uruchomienie.',                 img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80' },
-              ].map(s => (
+              {homeServices.map(s => (
                 <div
-                  key={s.title}
+                  key={s.id}
                   className="relative overflow-hidden group cursor-default"
                   style={{ height: '280px' }}
                 >
-                  <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700" />
+                  {s.img
+                    ? <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700" />
+                    : <div className="absolute inset-0 bg-slate-700" />
+                  }
                   <div className="absolute inset-0 bg-dark/60 group-hover:bg-dark/30 transition-colors duration-500" />
                   <div className="absolute inset-0 flex flex-col justify-end p-5">
                     <h3 className="text-white font-extrabold text-base leading-snug">{s.title}</h3>
-                    <p className="text-white/0 group-hover:text-white/70 text-xs mt-1 leading-relaxed transition-all duration-500 max-h-0 group-hover:max-h-20 overflow-hidden">{s.desc}</p>
+                    <p className="text-white/0 group-hover:text-white/70 text-xs mt-1 leading-relaxed transition-all duration-500 max-h-0 group-hover:max-h-20 overflow-hidden">{s.short_desc}</p>
                   </div>
                 </div>
               ))}

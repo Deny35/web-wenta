@@ -1,52 +1,19 @@
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
-const SERVICES = [
-  {
-    title: 'Projektowanie 3D',
-    desc: 'Każdy projekt zaczyna się u nas od szczegółowej dokumentacji. Tworzymy projekty P&ID, rysunki warsztatowe oraz pełne wizualizacje 3D, które pozwalają klientowi zobaczyć efekt końcowy jeszcze przed rozpoczęciem produkcji. Precyzyjna dokumentacja techniczna eliminuje błędy na etapie produkcji i montażu, skraca czas realizacji i obniża koszty.',
-    img: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?w=900&q=80',
-    tags: ['P&ID', 'CAD 3D', 'Dokumentacja techniczna'],
-  },
-  {
-    title: 'Obróbka i spawanie',
-    desc: 'Posiadamy własny zakład produkcyjny z nowoczesnym parkiem maszynowym. Realizujemy cięcie laserowe, obróbkę CNC, spawanie TIG orbitalne oraz elektropolerowanie powierzchni. Gwarantujemy najwyższą jakość połączeń spawalniczych, potwierdzoną certyfikatami i protokołami badań.',
-    img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=900&q=80',
-    tags: ['Spawanie TIG', 'Cięcie CNC', 'Elektropolerowanie'],
-  },
-  {
-    title: 'Izolacje techniczne',
-    desc: 'Wykonujemy izolacje termiczne rurociągów i zbiorników procesowych z zastosowaniem obudów ze stali nierdzewnej lub aluminium. Nasze izolacje zapewniają utrzymanie właściwej temperatury mediów procesowych, ograniczają straty energii i chronią personel przed poparzeniami. Dobieramy materiały izolacyjne adekwatnie do temperatur pracy instalacji.',
-    img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=80',
-    tags: ['Izolacja termiczna', 'Obudowy nierdzewne', 'Oszczędność energii'],
-  },
-  {
-    title: 'Maszyny przemysłu spożywczego',
-    desc: 'Projektujemy i produkujemy maszyny oraz urządzenia dedykowane dla branży spożywczej, farmaceutycznej i kosmetycznej. Wszystkie elementy konstrukcyjne wykonane są ze stali nierdzewnej gatunku AISI 304 lub 316L i spełniają normy EHEDG oraz GMP. Urządzenia projektowane są z myślą o łatwym myciu i dezynfekcji (CIP/SIP).',
-    img: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=900&q=80',
-    tags: ['EHEDG', 'GMP', 'CIP/SIP', 'AISI 316L'],
-  },
-  {
-    title: 'Instalacje procesowe',
-    desc: 'Budujemy kompleksowe instalacje procesowe ze stali nierdzewnej dla przemysłu spożywczego, chemicznego i farmaceutycznego. Obejmuje to rurociągi, zbiorniki, wymienniki ciepła, stacje CIP oraz całą armaturę. Każda instalacja wykonywana jest zgodnie z wymaganiami technicznymi klienta i obowiązującymi normami branżowymi.',
-    img: 'https://images.unsplash.com/photo-1513828583688-c52646db42da?w=900&q=80',
-    tags: ['Stal nierdzewna', 'Rurociągi', 'Zbiorniki', 'Stacje CIP'],
-  },
-  {
-    title: 'Instalacje transportowe',
-    desc: 'Projektujemy i budujemy systemy transportu wewnętrznego surowców i produktów: przenośniki taśmowe i ślimakowe, rurociągi grawitacyjne, instalacje pneumatyczne oraz systemy zasypowe. Dobieramy rozwiązania optymalne pod względem wydajności, higieny i kosztów eksploatacji.',
-    img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=900&q=80',
-    tags: ['Transport pneumatyczny', 'Przenośniki', 'Systemy zasypowe'],
-  },
-  {
-    title: 'Montaż linii technologicznych',
-    desc: 'Realizujemy kompleksowe montaże linii technologicznych – od prac spawalniczych i mechanicznych, przez podłączenia elektryczne i automatykę, po uruchomienie i testy akceptacyjne. Po zakończeniu montażu zapewniamy szkolenie personelu obsługi oraz serwis gwarancyjny i pogwarancyjny.',
-    img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=900&q=80',
-    tags: ['Montaż', 'Uruchomienie', 'Szkolenia', 'Serwis'],
-  },
-];
+import { api } from '../api';
 
 export default function Services() {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading]   = useState(true);
+
+  useEffect(() => {
+    api.services.list().then(list => {
+      setServices(list);
+      setLoading(false);
+    });
+  }, []);
+
   return (
     <>
       <Header />
@@ -62,33 +29,55 @@ export default function Services() {
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-6 py-16 space-y-0 divide-y divide-slate-100">
-          {SERVICES.map((s, i) => (
-            <div
-              key={s.title}
-              className={`flex flex-col ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-0 md:gap-12 items-stretch py-14`}
-            >
-              <div className="w-full md:w-2/5 flex-shrink-0">
-                <div className="rounded-2xl overflow-hidden h-64 md:h-full min-h-52">
-                  <img
-                    src={s.img}
-                    alt={s.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
+        <div className="max-w-5xl mx-auto px-6 py-16">
 
-              <div className="flex flex-col justify-center flex-1 pt-6 md:pt-0">
-                <h2 className="text-2xl font-extrabold text-slate-800 leading-tight">{s.title}</h2>
-                <p className="mt-4 text-slate-600 leading-relaxed text-sm">{s.desc}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {s.tags.map(tag => (
-                    <span key={tag} className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">{tag}</span>
-                  ))}
-                </div>
-              </div>
+          {loading && (
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+              <img src="/Projekt bez nazwy-4.png" alt="Wenta" className="w-32 animate-pulse opacity-60" />
+              <p className="text-xs text-slate-400 font-semibold uppercase tracking-widest">Ładowanie…</p>
             </div>
-          ))}
+          )}
+
+          {!loading && (
+            <div className="space-y-0 divide-y divide-slate-100">
+              {services.map((s, i) => (
+                <div
+                  key={s.id}
+                  className={`flex flex-col ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-0 md:gap-12 items-stretch py-14`}
+                >
+                  <div className="w-full md:w-2/5 flex-shrink-0">
+                    <div className="rounded-2xl overflow-hidden h-64 md:h-full min-h-52 bg-slate-100">
+                      {s.img
+                        ? <img src={s.img} alt={s.title} className="w-full h-full object-cover" />
+                        : <div className="w-full h-full bg-slate-200" />
+                      }
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col justify-center flex-1 pt-6 md:pt-0">
+                    <h2 className="text-2xl font-extrabold text-slate-800 leading-tight">{s.title}</h2>
+                    {s.opis && (
+                      <p className="mt-4 text-slate-600 leading-relaxed text-sm">{s.opis}</p>
+                    )}
+                    {!s.opis && s.short_desc && (
+                      <p className="mt-4 text-slate-600 leading-relaxed text-sm">{s.short_desc}</p>
+                    )}
+                    {Array.isArray(s.tags) && s.tags.length > 0 && (
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        {s.tags.map(tag => (
+                          <span key={tag} className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {!services.length && (
+                <p className="text-slate-400 text-sm py-8">Brak usług.</p>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="bg-dark py-16">
