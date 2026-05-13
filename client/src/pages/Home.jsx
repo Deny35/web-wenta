@@ -333,15 +333,11 @@ export default function Home() {
   const [clients,           setClients]           = useState([]);
   const [featuredProducts,  setFeaturedProducts]  = useState([]);
   const [productsExpanded,  setProductsExpanded]  = useState(false);
-  const [homeServices,      setHomeServices]       = useState([]);
-  const [productions,       setProductions]        = useState([]);
 
   useEffect(() => {
     api.projects.list().then(list => setFeatured(list.filter(p => p.featured).slice(0, 3)));
     api.clients.list().then(setClients);
     api.products.list().then(list => setFeaturedProducts(list.filter(p => p.featured)));
-    api.services.list().then(setHomeServices);
-    api.productions.list().then(setProductions);
   }, []);
 
   return (
@@ -391,7 +387,16 @@ export default function Home() {
 
         <section id="produkty" className="py-20 bg-slate-50">
           <div className="max-w-5xl mx-auto px-6">
-            <ImageAccordion label="Co produkujemy" items={productions.map(p => ({ title: p.title, desc: p.desc, img: p.img, icon: p.icon }))} />
+            <ImageAccordion label="Co produkujemy" items={[
+              { icon: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>', title: 'Linie technologiczne',    desc: 'Kompletne linie produkcyjne ze stali nierdzewnej pod konkretny proces.',             img: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=800&q=80' },
+              { icon: '<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>', title: 'Zbiorniki nierdzewne', desc: 'Procesowe, magazynowe i ciśnieniowe – certyfikowane z dokumentacją UDT.',              img: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=800&q=80' },
+              { icon: '<path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>',  title: 'Instalacje rurowe',    desc: 'Rurociągi ze stali nierdzewnej i kwasoodpornej – sanitarne, technologiczne, CIP.',  img: 'https://images.unsplash.com/photo-1513828583688-c52646db42da?w=800&q=80' },
+              { icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',              title: 'SKID-y produkcyjne',   desc: 'Gotowe moduły procesowe z armaturą i osprzętem – plug & play.',                     img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80' },
+              { icon: '<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>', title: 'Stacje mycia CIP', desc: 'Automatyczne mycie instalacji bez demontażu – z dokumentowanymi programami.', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80' },
+              { icon: '<path d="M12 22V12m0 0L8 8m4 4l4-4M4 6h16"/>',                         title: 'Mieszalniki przemysłowe', desc: 'Różne typy wirników – do roztworów, past, emulsji i zawiesin.',                   img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80' },
+              { icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>', title: 'Przenośniki', desc: 'Taśmowe, ślimakowe i łańcuchowe ze stali nierdzewnej.',                            img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&q=80' },
+              { icon: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>', title: 'Konstrukcje stalowe', desc: 'Platformy, podesty, schody i balustrady ze stali nierdzewnej.', img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80' },
+            ]} />
           </div>
         </section>
 
@@ -401,20 +406,25 @@ export default function Home() {
             <Label>Usługi</Label>
             <h2 className="mt-1 mb-10 text-3xl font-extrabold text-white">Od projektu do serwisu</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 rounded-2xl overflow-hidden">
-              {homeServices.map(s => (
+              {[
+                { title: 'Projektowanie 3D',       desc: 'Projekty P&ID, rysunki warsztatowe, wizualizacje 3D.',         img: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?w=600&q=80' },
+                { title: 'Obróbka i spawanie',     desc: 'Cięcie laserowe, CNC, spawanie TIG orbitalne.',                img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80' },
+                { title: 'Izolacje techniczne',    desc: 'Izolacje termiczne rurociągów i zbiorników.',                  img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80' },
+                { title: 'Maszyny spożywcze',      desc: 'Produkcja maszyn dla branży spożywczej.',                      img: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80' },
+                { title: 'Instalacje procesowe',   desc: 'Instalacje ze stali nierdzewnej dla przemysłu.',               img: 'https://images.unsplash.com/photo-1513828583688-c52646db42da?w=600&q=80' },
+                { title: 'Transport wewnętrzny',   desc: 'Przenośniki, rurociągi, instalacje pneumatyczne.',             img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=600&q=80' },
+                { title: 'Montaż linii',           desc: 'Kompletne linie od spawania po uruchomienie.',                 img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80' },
+              ].map(s => (
                 <div
-                  key={s.id}
+                  key={s.title}
                   className="relative overflow-hidden group cursor-default"
                   style={{ height: '280px' }}
                 >
-                  {s.img
-                    ? <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700" />
-                    : <div className="absolute inset-0 bg-slate-700" />
-                  }
+                  <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-dark/60 group-hover:bg-dark/30 transition-colors duration-500" />
                   <div className="absolute inset-0 flex flex-col justify-end p-5">
                     <h3 className="text-white font-extrabold text-base leading-snug">{s.title}</h3>
-                    <p className="text-white/0 group-hover:text-white/70 text-xs mt-1 leading-relaxed transition-all duration-500 max-h-0 group-hover:max-h-20 overflow-hidden">{s.short_desc}</p>
+                    <p className="text-white/0 group-hover:text-white/70 text-xs mt-1 leading-relaxed transition-all duration-500 max-h-0 group-hover:max-h-20 overflow-hidden">{s.desc}</p>
                   </div>
                 </div>
               ))}
