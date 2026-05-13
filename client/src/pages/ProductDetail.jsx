@@ -117,19 +117,31 @@ export default function ProductDetail() {
                 <p className="text-slate-400 italic">Brak opisu produktu.</p>
               )}
 
-              {Array.isArray(product.specs) && product.specs.filter(r => r.key || r.value).length > 0 && (
+              {product.specs && product.specs.rows && product.specs.rows.length > 0 && (
                 <div className="mt-8">
                   <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Specyfikacja techniczna</h3>
-                  <table className="w-full text-sm border-collapse">
-                    <tbody>
-                      {product.specs.filter(r => r.key || r.value).map((row, i) => (
-                        <tr key={i} className={i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}>
-                          <td className="py-2 px-3 font-semibold text-slate-600 border border-slate-100 w-1/2">{row.key}</td>
-                          <td className="py-2 px-3 text-slate-800 border border-slate-100">{row.value}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm border-collapse">
+                      {product.specs.headers && (
+                        <thead>
+                          <tr>
+                            {product.specs.headers.map((h, i) => (
+                              <th key={i} className="py-2 px-3 text-left font-bold text-slate-700 bg-slate-100 border border-slate-200">{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                      )}
+                      <tbody>
+                        {product.specs.rows.map((row, ri) => (
+                          <tr key={ri} className={ri % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+                            {row.map((cell, ci) => (
+                              <td key={ci} className="py-2 px-3 text-slate-700 border border-slate-100">{cell}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
 

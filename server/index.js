@@ -99,7 +99,8 @@ app.put('/api/products/:id', requireAuth, async (req, res) => {
     const id = Number(req.params.id);
     const fields = req.body;
     const keys   = Object.keys(fields);
-    const values = keys.map(k => k === 'images' ? JSON.stringify(fields[k]) : fields[k]);
+    const jsonFields = ['images', 'specs'];
+    const values = keys.map(k => jsonFields.includes(k) ? JSON.stringify(fields[k]) : fields[k]);
     const set    = keys.map((k, i) => `${k} = $${i + 2}`).join(', ');
     const rows   = await query(`UPDATE products SET ${set} WHERE id = $1 RETURNING *`, [id, ...values]);
     res.json(rows[0]);

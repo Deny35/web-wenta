@@ -413,7 +413,10 @@ function ProductsSection({ showSuccess }) {
   const [opis, setOpis]               = useState('');
   const [coverData, setCoverData]     = useState('');
   const [galleryData, setGalleryData] = useState([]);
-  const [specs, setSpecs]             = useState([]);
+  const [specs, setSpecs]             = useState({ cols: 2, headers: ['Parametr', 'Wartość'], rows: [] });
+  const [specConfigured, setSpecConfigured] = useState(false);
+  const [specColsInput, setSpecColsInput]   = useState(2);
+  const [specRowsInput, setSpecRowsInput]   = useState(3);
 
   const coverRef   = useRef();
   const galleryRef = useRef();
@@ -433,7 +436,9 @@ function ProductsSection({ showSuccess }) {
   function reset() {
     setEditingId(null); setTab('tile');
     setTitle(''); setCategory(''); setShortDesc(''); setOpis('');
-    setCoverData(''); setGalleryData([]); setSpecs([]);
+    setCoverData(''); setGalleryData([]);
+    setSpecs({ cols: 2, headers: ['Parametr', 'Wartość'], rows: [] });
+    setSpecConfigured(false); setSpecColsInput(2); setSpecRowsInput(3);
     if (coverRef.current)   coverRef.current.value   = '';
     if (galleryRef.current) galleryRef.current.value = '';
   }
@@ -444,7 +449,11 @@ function ProductsSection({ showSuccess }) {
     setShortDesc(p.short_desc || ''); setOpis(p.opis || '');
     setCoverData(p.img || '');
     setGalleryData(Array.isArray(p.images) ? p.images.slice() : []);
-    setSpecs(Array.isArray(p.specs) ? p.specs.slice() : []);
+    const s = p.specs && !Array.isArray(p.specs) && p.specs.rows ? p.specs : { cols: 2, headers: ['Parametr', 'Wartość'], rows: [] };
+    setSpecs(s);
+    setSpecConfigured(s.rows.length > 0);
+    setSpecColsInput(s.cols || 2);
+    setSpecRowsInput(s.rows.length || 3);
   }
 
   async function handleCoverChange(e) {
@@ -496,31 +505,42 @@ function ProductsSection({ showSuccess }) {
     setSaving(false);
   }
 
+  function buildGrid() {
+    const cols = Math.max(1, Math.min(10, specColsInput));
+    const rows = Math.max(1, Math.min(30, specRowsInput));
+    const headers = Array.from({ length: cols }, (_, i) => specs.headers?.[i] || `Kolumna ${i + 1}`);
+    const existingRows = specs.rows || [];
+    const newRows = Array.from({ length: rows }, (_, ri) => {
+      const existing = existingRows[ri] || [];
+      return Array.from({ length: cols }, (_, ci) => existing[ci] || '');
+    });
+    setSpecs({ cols, headers, rows: newRows });
+    setSpecConfigured(true);
+  }
+
+  function updateHeader(ci, val) {
+    setSpecs(s => ({ ...s, headers: s.headers.map((h, i) => i === ci ? val : h) }));
+  }
+
+  function updateCell(ri, ci, val) {
+    setSpecs(s => ({
+      ...s,
+      rows: s.rows.map((row, i) => i === ri ? row.map((cell, j) => j === ci ? val : cell) : row)
+    }));
+  }
+
   async function saveSpecs(e) {
     e.preventDefault();
     if (!editingId) return;
     setSaving(true);
     try {
-      const clean = specs.filter(r => r.key.trim() || r.value.trim());
-      await api.products.update(editingId, { specs: clean });
+      await api.products.update(editingId, { specs });
       showSuccess('Specyfikacja zaktualizowana!');
       await refresh();
     } catch (err) {
       alert('Błąd zapisu: ' + err.message);
     }
     setSaving(false);
-  }
-
-  function addSpecRow() {
-    setSpecs(s => [...s, { key: '', value: '' }]);
-  }
-
-  function updateSpec(i, field, val) {
-    setSpecs(s => s.map((r, idx) => idx === i ? { ...r, [field]: val } : r));
-  }
-
-  function removeSpec(i) {
-    setSpecs(s => s.filter((_, idx) => idx !== i));
   }
 
   async function deleteProduct(id) {
@@ -657,44 +677,70 @@ function ProductsSection({ showSuccess }) {
 
         {isEditing && tab === 'specs' && (
           <form onSubmit={saveSpecs}>
-            <h3 className="text-base font-bold text-slate-800 mb-4">Specyfikacja techniczna</h3>
+            <h3 className="text-base font-bold text-slate-800 mb-1">Specyfikacja techniczna</h3>
             <p className="text-xs text-slate-400 mb-4">Tabela widoczna na stronie produktu pod opisem.</p>
 
-            <div className="flex flex-col gap-2 mb-4">
-              {specs.map((row, i) => (
-                <div key={i} className="flex gap-2 items-center">
-                  <input
-                    value={row.key}
-                    onChange={e => updateSpec(i, 'key', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand"
-                    placeholder="Parametr (np. Pojemność)"
-                  />
-                  <input
-                    value={row.value}
-                    onChange={e => updateSpec(i, 'value', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand"
-                    placeholder="Wartość (np. 1000 L)"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeSpec(i)}
-                    className="w-8 h-8 flex-shrink-0 border border-red-200 rounded grid place-items-center hover:bg-red-50 transition-colors"
-                  >
-                    <svg className="w-3.5 h-3.5 stroke-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                  </button>
-                </div>
-              ))}
+            <div className="flex gap-3 items-end mb-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Kolumny</label>
+                <input
+                  type="number" min="1" max="6" value={specColsInput}
+                  onChange={e => setSpecColsInput(Number(e.target.value))}
+                  className="w-20 px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Wiersze</label>
+                <input
+                  type="number" min="1" max="30" value={specRowsInput}
+                  onChange={e => setSpecRowsInput(Number(e.target.value))}
+                  className="w-20 px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand"
+                />
+              </div>
+              <button
+                type="button" onClick={buildGrid}
+                className="px-4 py-2 bg-slate-700 text-white font-bold rounded text-sm hover:bg-slate-800 transition-colors"
+              >
+                Utwórz tabelę
+              </button>
             </div>
 
-            <button
-              type="button"
-              onClick={addSpecRow}
-              className="w-full mb-4 px-4 py-2 border-2 border-dashed border-slate-200 rounded text-sm text-slate-400 hover:border-brand hover:text-brand transition-colors"
-            >
-              + Dodaj wiersz
-            </button>
+            {specConfigured && specs.rows.length > 0 && (
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full border-collapse text-xs">
+                  <thead>
+                    <tr>
+                      {specs.headers.map((h, ci) => (
+                        <th key={ci} className="border border-slate-200 p-1">
+                          <input
+                            value={h}
+                            onChange={e => updateHeader(ci, e.target.value)}
+                            className="w-full px-2 py-1 bg-slate-50 font-bold text-slate-700 focus:outline-none focus:bg-white rounded"
+                            placeholder={`Nagłówek ${ci + 1}`}
+                          />
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {specs.rows.map((row, ri) => (
+                      <tr key={ri} className={ri % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+                        {row.map((cell, ci) => (
+                          <td key={ci} className="border border-slate-200 p-1">
+                            <input
+                              value={cell}
+                              onChange={e => updateCell(ri, ci, e.target.value)}
+                              className="w-full px-2 py-1 focus:outline-none focus:bg-blue-50 rounded bg-transparent"
+                              placeholder="—"
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
             <button
               type="submit" disabled={saving}
