@@ -65,6 +65,54 @@ app.delete('/api/projects/:id', requireAuth, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// Products
+app.get('/api/products', async (_, res) => {
+  try {
+    const rows = await query('SELECT * FROM products ORDER BY sort_order, id');
+    res.json(rows);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const rows = await query('SELECT * FROM products WHERE id = $1', [Number(req.params.id)]);
+    if (!rows.length) return res.status(404).json({ error: 'Not found' });
+    res.json(rows[0]);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/products', requireAuth, async (req, res) => {
+  try {
+    const { title, category, short_desc, opis, img, images, featured } = req.body;
+    const id = Date.now();
+    const rows = await query(
+      `INSERT INTO products (id, title, category, short_desc, opis, img, images, featured)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
+      [id, title, category || '', short_desc || '', opis || '', img || '', JSON.stringify(images || []), featured || false]
+    );
+    res.json(rows[0]);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/products/:id', requireAuth, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const fields = req.body;
+    const keys   = Object.keys(fields);
+    const values = keys.map(k => k === 'images' ? JSON.stringify(fields[k]) : fields[k]);
+    const set    = keys.map((k, i) => `${k} = $${i + 2}`).join(', ');
+    const rows   = await query(`UPDATE products SET ${set} WHERE id = $1 RETURNING *`, [id, ...values]);
+    res.json(rows[0]);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/products/:id', requireAuth, async (req, res) => {
+  try {
+    await query('DELETE FROM products WHERE id = $1', [Number(req.params.id)]);
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // Clients
 app.get('/api/clients', async (_, res) => {
   try {

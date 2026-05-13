@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const NAV = [
-  { href: '/#o-firmie', label: 'O firmie' },
-  { href: '/uslugi',    label: 'Usługi' },
-  { href: '/projekty',  label: 'Projekty' },
-  { href: '/kontakt',   label: 'Kontakt' },
+  { href: '/#o-firmie',      label: 'O firmie' },
+  { href: '/uslugi',         label: 'Usługi' },
+  { href: '/produkty-seryjne', label: 'Produkty' },
+  { href: '/projekty',       label: 'Projekty' },
+  { href: '/kontakt',        label: 'Kontakt' },
 ];
 
 const NAV_H       = 56;

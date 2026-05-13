@@ -402,6 +402,289 @@ function ProjectsSection({ showSuccess }) {
 }
 
 
+function ProductsSection({ showSuccess }) {
+  const [products, setProducts]       = useState([]);
+  const [editingId, setEditingId]     = useState(null);
+  const [tab, setTab]                 = useState('tile');
+
+  const [title, setTitle]             = useState('');
+  const [category, setCategory]       = useState('');
+  const [shortDesc, setShortDesc]     = useState('');
+  const [opis, setOpis]               = useState('');
+  const [coverData, setCoverData]     = useState('');
+  const [galleryData, setGalleryData] = useState([]);
+
+  const coverRef   = useRef();
+  const galleryRef = useRef();
+
+  const [saving, setSaving]   = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  async function refresh() {
+    setLoading(true);
+    const list = await api.products.list();
+    setProducts(list);
+    setLoading(false);
+  }
+
+  useEffect(() => { refresh(); }, []);
+
+  function reset() {
+    setEditingId(null); setTab('tile');
+    setTitle(''); setCategory(''); setShortDesc(''); setOpis('');
+    setCoverData(''); setGalleryData([]);
+    if (coverRef.current)   coverRef.current.value   = '';
+    if (galleryRef.current) galleryRef.current.value = '';
+  }
+
+  function startEdit(p) {
+    setEditingId(p.id); setTab('tile');
+    setTitle(p.title); setCategory(p.category || '');
+    setShortDesc(p.short_desc || ''); setOpis(p.opis || '');
+    setCoverData(p.img || '');
+    setGalleryData(Array.isArray(p.images) ? p.images.slice() : []);
+  }
+
+  async function handleCoverChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setCoverData(await readFileAsDataURL(file));
+  }
+
+  async function handleGalleryChange(e) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setGalleryData(await Promise.all(files.map(readFileAsDataURL)));
+  }
+
+  async function saveTile(e) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      if (editingId) {
+        const changes = { title, category };
+        if (coverData) changes.img = coverData;
+        await api.products.update(editingId, changes);
+        showSuccess('Produkt zaktualizowany!');
+      } else {
+        await api.products.add({ title, category, short_desc: shortDesc, opis, img: coverData, images: [], featured: false });
+        showSuccess('Produkt dodany!');
+        reset();
+      }
+      await refresh();
+    } catch (err) {
+      alert('Błąd zapisu: ' + err.message);
+    }
+    setSaving(false);
+  }
+
+  async function saveDetails(e) {
+    e.preventDefault();
+    if (!editingId) return;
+    setSaving(true);
+    try {
+      const current = products.find(p => p.id === editingId) || {};
+      const images  = galleryData.length ? galleryData : (current.images || []);
+      await api.products.update(editingId, { short_desc: shortDesc, opis, images });
+      showSuccess('Szczegóły zaktualizowane!');
+      await refresh();
+    } catch (err) {
+      alert('Błąd zapisu: ' + err.message);
+    }
+    setSaving(false);
+  }
+
+  async function deleteProduct(id) {
+    if (!confirm('Usunąć produkt?')) return;
+    if (editingId === id) reset();
+    await api.products.remove(id);
+    await refresh();
+  }
+
+  async function toggleFeatured(id) {
+    const p = products.find(x => x.id === id);
+    await api.products.update(id, { featured: !p.featured });
+    await refresh();
+  }
+
+  const isEditing = Boolean(editingId);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6 items-start">
+
+      <div className="bg-white border border-slate-200 rounded-xl p-6">
+
+        {isEditing && (
+          <div className="flex border-b-2 border-slate-100 mb-5 gap-0">
+            {['tile', 'details'].map(t => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`px-4 py-2 text-sm font-bold border-b-2 -mb-0.5 transition-colors ${
+                  tab === t ? 'text-brand border-brand' : 'text-slate-400 border-transparent hover:text-slate-600'
+                }`}
+              >
+                {t === 'tile' ? 'Podstawowe' : 'Szczegóły'}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {(!isEditing || tab === 'tile') && (
+          <form onSubmit={saveTile}>
+            <h3 className="text-base font-bold text-slate-800 mb-4">
+              {isEditing ? 'Edytuj produkt' : 'Dodaj produkt'}
+            </h3>
+
+            <div className="mb-3">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Nazwa *</label>
+              <input
+                required value={title} onChange={e => setTitle(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand"
+                placeholder="np. Zbiornik procesowy 1000L"
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Kategoria</label>
+              <input
+                value={category} onChange={e => setCategory(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand"
+                placeholder="np. Zbiorniki"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Zdjęcie okładki</label>
+              <input type="file" accept="image/*" ref={coverRef} onChange={handleCoverChange} className="text-sm text-slate-500" />
+              {coverData && <img src={coverData} alt="" className="mt-2 w-full aspect-video object-cover rounded border border-slate-200" />}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="submit" disabled={saving}
+                className="flex-1 px-4 py-2.5 bg-brand text-white font-bold rounded text-sm hover:opacity-90 transition-opacity disabled:opacity-60"
+              >
+                {saving ? 'Zapisywanie…' : isEditing ? 'Zapisz' : 'Dodaj produkt'}
+              </button>
+              {isEditing && (
+                <button type="button" onClick={reset}
+                  className="px-4 py-2.5 border border-slate-200 rounded text-sm font-semibold text-slate-600 hover:bg-slate-50"
+                >
+                  Anuluj
+                </button>
+              )}
+            </div>
+          </form>
+        )}
+
+        {isEditing && tab === 'details' && (
+          <form onSubmit={saveDetails}>
+            <h3 className="text-base font-bold text-slate-800 mb-4">Szczegóły produktu</h3>
+
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">Krótki opis (kafelek)</label>
+                <span className={`text-xs font-semibold ${shortDesc.length > 120 ? 'text-red-500' : 'text-slate-400'}`}>
+                  {shortDesc.length}
+                </span>
+              </div>
+              <textarea
+                value={shortDesc} onChange={e => setShortDesc(e.target.value)} rows={2}
+                className="w-full px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand resize-vertical"
+                placeholder="Krótki opis widoczny na kafelku…"
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Długi opis (strona produktu)</label>
+              <textarea
+                value={opis} onChange={e => setOpis(e.target.value)} rows={6}
+                className="w-full px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand resize-vertical"
+                placeholder="Pełny opis wyświetlany na stronie produktu…"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Zdjęcia galerii</label>
+              <input type="file" accept="image/*" multiple ref={galleryRef} onChange={handleGalleryChange} className="text-sm text-slate-500" />
+              {galleryData.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {galleryData.map((src, i) => (
+                    <img key={i} src={src} alt="" className="w-20 h-14 object-cover rounded border border-slate-200" />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              type="submit" disabled={saving}
+              className="w-full px-4 py-2.5 bg-brand text-white font-bold rounded text-sm hover:opacity-90 transition-opacity disabled:opacity-60"
+            >
+              {saving ? 'Zapisywanie…' : 'Zapisz szczegóły'}
+            </button>
+          </form>
+        )}
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-xl p-6">
+        <h3 className="text-base font-bold text-slate-800 mb-4">Lista produktów</h3>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <img src="/Projekt bez nazwy-4.png" alt="Wenta" className="w-24 animate-pulse opacity-60" />
+            <p className="text-xs text-slate-400 font-semibold uppercase tracking-widest">Ładowanie…</p>
+          </div>
+        ) : !products.length && <p className="text-sm text-slate-400">Brak produktów.</p>}
+
+        <div className="flex flex-col gap-2">
+          {products.map(p => (
+            <div key={p.id} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg">
+              {p.img
+                ? <img src={p.img} alt="" className="w-14 h-10 object-cover rounded flex-shrink-0" />
+                : <div className="w-14 h-10 bg-slate-100 rounded flex-shrink-0" />
+              }
+
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-sm text-slate-800 truncate">{p.title}</div>
+                <div className="text-xs text-slate-400">{p.category || '—'}</div>
+              </div>
+
+              <label className="flex items-center gap-1 text-sm text-slate-400 flex-shrink-0 cursor-pointer" title="Wyróżnij na stronie głównej">
+                <input type="checkbox" checked={!!p.featured} onChange={() => toggleFeatured(p.id)} className="accent-brand" />⭐
+              </label>
+
+              <button
+                onClick={() => startEdit(p)}
+                className="w-8 h-8 flex-shrink-0 border border-blue-200 rounded grid place-items-center hover:bg-blue-50 transition-colors"
+                title="Edytuj"
+              >
+                <svg className="w-3.5 h-3.5 stroke-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+
+              <button
+                onClick={() => deleteProduct(p.id)}
+                className="w-8 h-8 flex-shrink-0 border border-red-200 rounded grid place-items-center hover:bg-red-50 transition-colors"
+                title="Usuń"
+              >
+                <svg className="w-3.5 h-3.5 stroke-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14H6L5 6"/>
+                  <path d="M10 11v6M14 11v6"/>
+                  <path d="M9 6V4h6v2"/>
+                </svg>
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 function ClientsSection({ showSuccess }) {
   const [clients, setClients] = useState([]);
   const [name, setName]       = useState('');
@@ -531,7 +814,7 @@ export default function Admin() {
       <div className="max-w-6xl mx-auto px-6 py-8">
 
         <div className="flex border-b-2 border-slate-200 mb-6 gap-0">
-          {[['projects','Projekty'], ['clients','Klienci'], ['content','Treść strony']].map(([t, label]) => (
+          {[['projects','Projekty'], ['products','Produkty seryjne'], ['clients','Klienci'], ['content','Treść strony']].map(([t, label]) => (
             <button
               key={t}
               onClick={() => setMainTab(t)}
@@ -548,9 +831,10 @@ export default function Admin() {
 
         <SuccessMsg msg={success} onHide={() => setSuccess('')} />
 
-        {mainTab === 'projects' && <ProjectsSection showSuccess={setSuccess} />}
-        {mainTab === 'clients'  && <ClientsSection  showSuccess={setSuccess} />}
-        {mainTab === 'content'  && <AdminContent    showSuccess={setSuccess} />}
+        {mainTab === 'projects'  && <ProjectsSection  showSuccess={setSuccess} />}
+        {mainTab === 'products'  && <ProductsSection  showSuccess={setSuccess} />}
+        {mainTab === 'clients'   && <ClientsSection   showSuccess={setSuccess} />}
+        {mainTab === 'content'   && <AdminContent     showSuccess={setSuccess} />}
       </div>
     </div>
   );

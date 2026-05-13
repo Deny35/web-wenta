@@ -154,26 +154,71 @@ function HeroSlider() {
 }
 
 
-const ProductCard = ({ icon, title, desc }) => (
-  <div className="bg-white border border-slate-200 rounded-lg p-5 hover:-translate-y-1 hover:border-accent hover:shadow-lg transition-all duration-200">
-    <div className="w-10 h-10 bg-blue-50 rounded-lg grid place-items-center mb-3">
-      <svg className="w-5 h-5 fill-accent" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: icon }} />
-    </div>
-    <h3 className="font-bold text-slate-800 mb-1">{title}</h3>
-    <p className="text-sm text-slate-400 leading-relaxed">{desc}</p>
-  </div>
-);
+function ImageAccordion({ items, label }) {
+  const [openIdx, setOpenIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+  const [paused, setPaused]   = useState(false);
+  const active = items[openIdx] || items[0];
 
+  useEffect(() => {
+    if (paused) return;
+    const t = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setOpenIdx(i => (i + 1) % items.length);
+        setVisible(true);
+      }, 250);
+    }, 3000);
+    return () => clearInterval(t);
+  }, [paused, items.length]);
 
-const ServiceRow = ({ icon, title, desc }) => (
-  <div className="flex gap-3 p-4 bg-white border border-slate-200 border-l-4 border-l-accent rounded-r-lg hover:shadow-md transition-shadow">
-    <svg className="w-5 h-5 fill-accent flex-shrink-0 mt-0.5" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: icon }} />
-    <div>
-      <h4 className="font-bold text-slate-800 text-sm mb-1">{title}</h4>
-      <p className="text-xs text-slate-400 leading-relaxed">{desc}</p>
+  function select(i) {
+    if (i === openIdx) return;
+    setPaused(true);
+    setVisible(false);
+    setTimeout(() => {
+      setOpenIdx(i);
+      setVisible(true);
+    }, 250);
+  }
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+      <div className="bg-white divide-y divide-slate-100">
+        <div className="px-6 py-4 bg-dark">
+          <span className="text-xs font-bold tracking-widest uppercase text-accent">{label}</span>
+        </div>
+        {items.map((item, i) => (
+          <button
+            key={item.title}
+            onClick={() => select(i)}
+            className={`w-full flex items-center gap-4 px-6 py-4 text-left transition-all duration-200 group ${openIdx === i ? 'bg-accent/5 border-l-4 border-accent' : 'border-l-4 border-transparent hover:bg-slate-50'}`}
+          >
+            <div className="min-w-0">
+              <div className={`font-bold text-sm ${openIdx === i ? 'text-accent' : 'text-slate-800'}`}>{item.title}</div>
+              {openIdx === i && <div className="text-xs text-slate-500 mt-0.5 leading-relaxed">{item.desc}</div>}
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <div className="relative min-h-[320px] lg:min-h-0 bg-slate-900">
+        <img
+          src={active.img}
+          alt={active.title}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.25s ease' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-transparent to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-6" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.25s ease' }}>
+          <p className="text-white font-extrabold text-lg leading-snug">{active.title}</p>
+          <p className="text-white/60 text-xs mt-1">{active.desc}</p>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+}
+
 
 
 function Carousel({ clients }) {
@@ -284,12 +329,15 @@ function ProjectTile({ p }) {
 export default function Home() {
   const { c } = useContent();
 
-  const [featured, setFeatured] = useState([]);
-  const [clients,  setClients]  = useState([]);
+  const [featured,          setFeatured]          = useState([]);
+  const [clients,           setClients]           = useState([]);
+  const [featuredProducts,  setFeaturedProducts]  = useState([]);
+  const [productsExpanded,  setProductsExpanded]  = useState(false);
 
   useEffect(() => {
     api.projects.list().then(list => setFeatured(list.filter(p => p.featured).slice(0, 3)));
     api.clients.list().then(setClients);
+    api.products.list().then(list => setFeaturedProducts(list.filter(p => p.featured)));
   }, []);
 
   return (
@@ -339,35 +387,47 @@ export default function Home() {
 
         <section id="produkty" className="py-20 bg-slate-50">
           <div className="max-w-5xl mx-auto px-6">
-            <Label>Produkty</Label>
-            <h2 className="mt-1 mb-8 text-3xl font-extrabold text-slate-800">Co produkujemy</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <ProductCard icon='<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' title="Linie technologiczne"    desc="Kompletne linie produkcyjne ze stali nierdzewnej pod konkretny proces." />
-              <ProductCard icon='<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>' title="Zbiorniki nierdzewne"    desc="Procesowe, magazynowe i ciśnieniowe – certyfikowane z dokumentacją UDT." />
-              <ProductCard icon='<path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>'                title="Instalacje rurowe"       desc="Rurociągi ze stali nierdzewnej i kwasoodpornej – sanitarne, technologiczne, CIP." />
-              <ProductCard icon='<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'                            title="SKID-y produkcyjne"      desc="Gotowe moduły procesowe z armaturą i osprzętem – plug & play." />
-              <ProductCard icon='<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>' title="Stacje mycia CIP" desc="Automatyczne mycie instalacji bez demontażu – z dokumentowanymi programami." />
-              <ProductCard icon='<path d="M12 22V12m0 0L8 8m4 4l4-4M4 6h16"/>'                                       title="Mieszalniki przemysłowe" desc="Różne typy wirników – do roztworów, past, emulsji i zawiesin." />
-              <ProductCard icon='<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>' title="Przenośniki"             desc="Taśmowe, ślimakowe i łańcuchowe ze stali nierdzewnej." />
-              <ProductCard icon='<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>' title="Konstrukcje stalowe"  desc="Platformy, podesty, schody i balustrady ze stali nierdzewnej." />
-            </div>
+            <ImageAccordion label="Co produkujemy" items={[
+              { icon: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>', title: 'Linie technologiczne',    desc: 'Kompletne linie produkcyjne ze stali nierdzewnej pod konkretny proces.',             img: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=800&q=80' },
+              { icon: '<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>', title: 'Zbiorniki nierdzewne', desc: 'Procesowe, magazynowe i ciśnieniowe – certyfikowane z dokumentacją UDT.',              img: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=800&q=80' },
+              { icon: '<path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>',  title: 'Instalacje rurowe',    desc: 'Rurociągi ze stali nierdzewnej i kwasoodpornej – sanitarne, technologiczne, CIP.',  img: 'https://images.unsplash.com/photo-1513828583688-c52646db42da?w=800&q=80' },
+              { icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',              title: 'SKID-y produkcyjne',   desc: 'Gotowe moduły procesowe z armaturą i osprzętem – plug & play.',                     img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80' },
+              { icon: '<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>', title: 'Stacje mycia CIP', desc: 'Automatyczne mycie instalacji bez demontażu – z dokumentowanymi programami.', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80' },
+              { icon: '<path d="M12 22V12m0 0L8 8m4 4l4-4M4 6h16"/>',                         title: 'Mieszalniki przemysłowe', desc: 'Różne typy wirników – do roztworów, past, emulsji i zawiesin.',                   img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80' },
+              { icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>', title: 'Przenośniki', desc: 'Taśmowe, ślimakowe i łańcuchowe ze stali nierdzewnej.',                            img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&q=80' },
+              { icon: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>', title: 'Konstrukcje stalowe', desc: 'Platformy, podesty, schody i balustrady ze stali nierdzewnej.', img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80' },
+            ]} />
           </div>
         </section>
 
 
-        <section id="uslugi" className="py-20">
+        <section id="uslugi" className="py-20 bg-dark">
           <div className="max-w-5xl mx-auto px-6">
             <Label>Usługi</Label>
-            <h2 className="mt-1 mb-8 text-3xl font-extrabold text-slate-800">Od projektu do serwisu</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <ServiceRow icon='<path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>'   title="Projektowanie 3D"                        desc="Projekty P&ID, rysunki warsztatowe, wizualizacje 3D, dokumentacja techniczna." />
-              <ServiceRow icon='<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>' title="Obróbka i spawanie"    desc="Cięcie laserowe, CNC, spawanie TIG orbitalne, elektropolerowanie." />
-              <ServiceRow icon='<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'                                                    title="Izolacje techniczne"                     desc="Izolacje termiczne rurociągów i zbiorników – obudowy nierdzewne lub aluminiowe." />
-              <ServiceRow icon='<path d="M5 12H19M12 5l7 7-7 7"/>'                                                                          title="Relokacja maszyn"                        desc="Demontaż, transport i ponowny montaż linii produkcyjnych." />
-              <ServiceRow icon='<path d="M12 2a10 10 0 100 20A10 10 0 0012 2zM2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>' title="Maszyny i urządzenia przemysłu spożywczego" desc="Produkcja i montaż maszyn oraz urządzeń dedykowanych dla branży spożywczej." />
-              <ServiceRow icon='<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>' title="Instalacje procesowe"   desc="Kompleksowe instalacje procesowe ze stali nierdzewnej dla różnych gałęzi przemysłu." />
-              <ServiceRow icon='<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>'       title="Urządzenia i instalacje transportowe"    desc="Systemy transportu wewnętrznego – przenośniki, rurociągi, instalacje pneumatyczne." />
-              <ServiceRow icon='<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'                                                        title="Montaż linii technologicznych"           desc="Realizujemy montaże kompletnych linii technologicznych – od spawania po uruchomienie i testy." />
+            <h2 className="mt-1 mb-10 text-3xl font-extrabold text-white">Od projektu do serwisu</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 rounded-2xl overflow-hidden">
+              {[
+                { title: 'Projektowanie 3D',       desc: 'Projekty P&ID, rysunki warsztatowe, wizualizacje 3D.',         img: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?w=600&q=80' },
+                { title: 'Obróbka i spawanie',     desc: 'Cięcie laserowe, CNC, spawanie TIG orbitalne.',                img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80' },
+                { title: 'Izolacje techniczne',    desc: 'Izolacje termiczne rurociągów i zbiorników.',                  img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80' },
+                { title: 'Maszyny spożywcze',      desc: 'Produkcja maszyn dla branży spożywczej.',                      img: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80' },
+                { title: 'Instalacje procesowe',   desc: 'Instalacje ze stali nierdzewnej dla przemysłu.',               img: 'https://images.unsplash.com/photo-1513828583688-c52646db42da?w=600&q=80' },
+                { title: 'Transport wewnętrzny',   desc: 'Przenośniki, rurociągi, instalacje pneumatyczne.',             img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=600&q=80' },
+                { title: 'Montaż linii',           desc: 'Kompletne linie od spawania po uruchomienie.',                 img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80' },
+              ].map(s => (
+                <div
+                  key={s.title}
+                  className="relative overflow-hidden group cursor-default"
+                  style={{ height: '280px' }}
+                >
+                  <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-dark/60 group-hover:bg-dark/30 transition-colors duration-500" />
+                  <div className="absolute inset-0 flex flex-col justify-end p-5">
+                    <h3 className="text-white font-extrabold text-base leading-snug">{s.title}</h3>
+                    <p className="text-white/0 group-hover:text-white/70 text-xs mt-1 leading-relaxed transition-all duration-500 max-h-0 group-hover:max-h-20 overflow-hidden">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -404,6 +464,60 @@ export default function Home() {
             <Carousel clients={clients} />
           </div>
         </section>
+
+
+        {featuredProducts.length > 0 && (
+          <section id="produkty-seryjne" className="py-20 bg-white">
+            <div className="max-w-5xl mx-auto px-6">
+              <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
+                <div>
+                  <Label>Oferta</Label>
+                  <h2 className="mt-1 text-3xl font-extrabold text-slate-800">Produkty seryjne</h2>
+                </div>
+                <Link to="/produkty-seryjne" className="px-5 py-2.5 rounded border-2 border-accent text-accent font-bold text-sm hover:bg-accent hover:text-white transition-colors">
+                  Pełny katalog →
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {(productsExpanded ? featuredProducts : featuredProducts.slice(0, 3)).map(p => (
+                  <Link
+                    key={p.id}
+                    to={`/produkt/${p.id}`}
+                    className="group bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                  >
+                    <div className="aspect-video bg-slate-100 overflow-hidden">
+                      {p.img
+                        ? <img src={p.img} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        : <div className="w-full h-full bg-slate-200" />
+                      }
+                    </div>
+                    <div className="p-5">
+                      {p.category && (
+                        <span className="text-xs font-bold uppercase tracking-widest text-accent">{p.category}</span>
+                      )}
+                      <h3 className="mt-1 text-base font-extrabold text-slate-800 leading-snug group-hover:text-brand transition-colors">{p.title}</h3>
+                      {p.short_desc && (
+                        <p className="mt-2 text-sm text-slate-500 leading-relaxed line-clamp-2">{p.short_desc}</p>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {featuredProducts.length > 3 && (
+                <div className="text-center mt-8">
+                  <button
+                    onClick={() => setProductsExpanded(e => !e)}
+                    className="px-8 py-3 rounded border-2 border-slate-200 text-slate-600 font-bold text-sm hover:border-brand hover:text-brand transition-colors"
+                  >
+                    {productsExpanded ? 'Zwiń ↑' : `Pokaż wszystkie (${featuredProducts.length}) ↓`}
+                  </button>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
 
         <section id="kontakt" className="py-20 bg-dark">

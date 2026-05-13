@@ -32,6 +32,17 @@ async function init() {
       key   TEXT PRIMARY KEY,
       value TEXT
     );
+    CREATE TABLE IF NOT EXISTS products (
+      id         BIGINT PRIMARY KEY,
+      title      TEXT,
+      category   TEXT DEFAULT '',
+      short_desc TEXT DEFAULT '',
+      opis       TEXT DEFAULT '',
+      img        TEXT DEFAULT '',
+      images     JSONB DEFAULT '[]',
+      featured   BOOLEAN DEFAULT false,
+      sort_order INT DEFAULT 0
+    );
   `);
 }
 

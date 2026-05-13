@@ -3,44 +3,46 @@ import Footer from '../components/Footer';
 
 const SERVICES = [
   {
-    icon: '<path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>',
     title: 'Projektowanie 3D',
-    desc: 'Projekty P&ID, rysunki warsztatowe, wizualizacje 3D, dokumentacja techniczna. Każdy projekt zaczyna się od szczegółowego planu, który eliminuje błędy na etapie produkcji i montażu.',
+    desc: 'Każdy projekt zaczyna się u nas od szczegółowej dokumentacji. Tworzymy projekty P&ID, rysunki warsztatowe oraz pełne wizualizacje 3D, które pozwalają klientowi zobaczyć efekt końcowy jeszcze przed rozpoczęciem produkcji. Precyzyjna dokumentacja techniczna eliminuje błędy na etapie produkcji i montażu, skraca czas realizacji i obniża koszty.',
+    img: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?w=900&q=80',
+    tags: ['P&ID', 'CAD 3D', 'Dokumentacja techniczna'],
   },
   {
-    icon: '<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',
     title: 'Obróbka i spawanie',
-    desc: 'Cięcie laserowe, CNC, spawanie TIG orbitalne, elektropolerowanie. Posiadamy własny zakład produkcyjny wyposażony w nowoczesne maszyny.',
+    desc: 'Posiadamy własny zakład produkcyjny z nowoczesnym parkiem maszynowym. Realizujemy cięcie laserowe, obróbkę CNC, spawanie TIG orbitalne oraz elektropolerowanie powierzchni. Gwarantujemy najwyższą jakość połączeń spawalniczych, potwierdzoną certyfikatami i protokołami badań.',
+    img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=900&q=80',
+    tags: ['Spawanie TIG', 'Cięcie CNC', 'Elektropolerowanie'],
   },
   {
-    icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
     title: 'Izolacje techniczne',
-    desc: 'Izolacje termiczne rurociągów i zbiorników – obudowy nierdzewne lub aluminiowe. Zapewniamy utrzymanie właściwej temperatury mediów procesowych.',
+    desc: 'Wykonujemy izolacje termiczne rurociągów i zbiorników procesowych z zastosowaniem obudów ze stali nierdzewnej lub aluminium. Nasze izolacje zapewniają utrzymanie właściwej temperatury mediów procesowych, ograniczają straty energii i chronią personel przed poparzeniami. Dobieramy materiały izolacyjne adekwatnie do temperatur pracy instalacji.',
+    img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=80',
+    tags: ['Izolacja termiczna', 'Obudowy nierdzewne', 'Oszczędność energii'],
   },
   {
-    icon: '<path d="M5 12H19M12 5l7 7-7 7"/>',
-    title: 'Relokacja maszyn',
-    desc: 'Demontaż, transport i ponowny montaż linii produkcyjnych. Kompleksowa obsługa przeprowadzki całych zakładów produkcyjnych.',
+    title: 'Maszyny przemysłu spożywczego',
+    desc: 'Projektujemy i produkujemy maszyny oraz urządzenia dedykowane dla branży spożywczej, farmaceutycznej i kosmetycznej. Wszystkie elementy konstrukcyjne wykonane są ze stali nierdzewnej gatunku AISI 304 lub 316L i spełniają normy EHEDG oraz GMP. Urządzenia projektowane są z myślą o łatwym myciu i dezynfekcji (CIP/SIP).',
+    img: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=900&q=80',
+    tags: ['EHEDG', 'GMP', 'CIP/SIP', 'AISI 316L'],
   },
   {
-    icon: '<path d="M12 2a10 10 0 100 20A10 10 0 0012 2zM2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>',
-    title: 'Maszyny i urządzenia przemysłu spożywczego',
-    desc: 'Produkcja i montaż maszyn oraz urządzeń dedykowanych dla branży spożywczej. Wszystkie elementy spełniają normy EHEDG i GMP.',
-  },
-  {
-    icon: '<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',
     title: 'Instalacje procesowe',
-    desc: 'Kompleksowe instalacje procesowe ze stali nierdzewnej dla różnych gałęzi przemysłu – spożywczego i chemicznego.',
+    desc: 'Budujemy kompleksowe instalacje procesowe ze stali nierdzewnej dla przemysłu spożywczego, chemicznego i farmaceutycznego. Obejmuje to rurociągi, zbiorniki, wymienniki ciepła, stacje CIP oraz całą armaturę. Każda instalacja wykonywana jest zgodnie z wymaganiami technicznymi klienta i obowiązującymi normami branżowymi.',
+    img: 'https://images.unsplash.com/photo-1513828583688-c52646db42da?w=900&q=80',
+    tags: ['Stal nierdzewna', 'Rurociągi', 'Zbiorniki', 'Stacje CIP'],
   },
   {
-    icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>',
-    title: 'Urządzenia i instalacje transportowe',
-    desc: 'Systemy transportu wewnętrznego – przenośniki, rurociągi, instalacje pneumatyczne. Projektujemy i budujemy kompleksowe systemy przemieszczania surowców i produktów.',
+    title: 'Instalacje transportowe',
+    desc: 'Projektujemy i budujemy systemy transportu wewnętrznego surowców i produktów: przenośniki taśmowe i ślimakowe, rurociągi grawitacyjne, instalacje pneumatyczne oraz systemy zasypowe. Dobieramy rozwiązania optymalne pod względem wydajności, higieny i kosztów eksploatacji.',
+    img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=900&q=80',
+    tags: ['Transport pneumatyczny', 'Przenośniki', 'Systemy zasypowe'],
   },
   {
-    icon: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
     title: 'Montaż linii technologicznych',
-    desc: 'Realizujemy montaże kompletnych linii technologicznych – od spawania po uruchomienie i testy. Oferujemy również szkolenie personelu i serwis pogwarancyjny.',
+    desc: 'Realizujemy kompleksowe montaże linii technologicznych – od prac spawalniczych i mechanicznych, przez podłączenia elektryczne i automatykę, po uruchomienie i testy akceptacyjne. Po zakończeniu montażu zapewniamy szkolenie personelu obsługi oraz serwis gwarancyjny i pogwarancyjny.',
+    img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=900&q=80',
+    tags: ['Montaż', 'Uruchomienie', 'Szkolenia', 'Serwis'],
   },
 ];
 
@@ -50,7 +52,7 @@ export default function Services() {
       <Header />
       <div className="min-h-screen">
 
-        <div className="bg-dark py-16">
+        <div className="bg-dark py-20">
           <div className="max-w-5xl mx-auto px-6">
             <span className="text-xs font-bold tracking-widest uppercase text-accent">Co oferujemy</span>
             <h1 className="mt-2 text-4xl font-extrabold text-white">Nasze usługi</h1>
@@ -60,25 +62,40 @@ export default function Services() {
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {SERVICES.map(s => (
-              <div key={s.title} className="flex gap-5 p-6 bg-white border border-slate-200 border-l-4 border-l-accent rounded-r-xl hover:shadow-lg transition-shadow">
-                <div className="flex-shrink-0 w-12 h-12 bg-blue-50 rounded-xl grid place-items-center">
-                  <svg className="w-6 h-6 fill-accent" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: s.icon }} />
-                </div>
-                <div>
-                  <h2 className="font-bold text-slate-800 mb-2">{s.title}</h2>
-                  <p className="text-sm text-slate-500 leading-relaxed">{s.desc}</p>
+        <div className="max-w-5xl mx-auto px-6 py-16 space-y-0 divide-y divide-slate-100">
+          {SERVICES.map((s, i) => (
+            <div
+              key={s.title}
+              className={`flex flex-col ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-0 md:gap-12 items-stretch py-14`}
+            >
+              <div className="w-full md:w-2/5 flex-shrink-0">
+                <div className="rounded-2xl overflow-hidden h-64 md:h-full min-h-52">
+                  <img
+                    src={s.img}
+                    alt={s.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
-            ))}
-          </div>
 
-          <div className="mt-14 bg-dark rounded-2xl p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex flex-col justify-center flex-1 pt-6 md:pt-0">
+                <h2 className="text-2xl font-extrabold text-slate-800 leading-tight">{s.title}</h2>
+                <p className="mt-4 text-slate-600 leading-relaxed text-sm">{s.desc}</p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {s.tags.map(tag => (
+                    <span key={tag} className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-dark py-16">
+          <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-2xl font-extrabold text-white">Potrzebujesz wyceny?</h3>
-              <p className="text-white/50 mt-1 text-sm">Skontaktuj się z nami.</p>
+              <p className="text-white/50 mt-1 text-sm">Skontaktuj się z nami – odpowiemy w ciągu 24 godzin.</p>
             </div>
             <a href="/kontakt" className="flex-shrink-0 px-8 py-3 rounded-lg bg-brand text-white font-bold text-sm hover:opacity-90 transition-opacity">
               Kontakt →
