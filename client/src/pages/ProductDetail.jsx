@@ -72,7 +72,7 @@ export default function ProductDetail() {
             <div className="w-full lg:w-1/2">
               <div className="rounded-2xl overflow-hidden bg-slate-100 aspect-video">
                 {allImages.length > 0
-                  ? <img src={allImages[activeImg]} alt={product.title} className="w-full h-full object-cover" />
+                  ? <img src={allImages[activeImg]} alt={product.title} className="w-full h-full object-contain" />
                   : <div className="w-full h-full flex items-center justify-center">
                       <svg className="w-16 h-16 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                         <rect x="3" y="3" width="18" height="18" rx="2" />
