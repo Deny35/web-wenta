@@ -76,7 +76,7 @@ export default function Products() {
                   >
                     <div className="aspect-video bg-slate-100 overflow-hidden">
                       {p.img
-                        ? <img src={p.img} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ? <img src={p.img} alt={p.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                         : <div className="w-full h-full bg-slate-200 flex items-center justify-center">
                             <svg className="w-10 h-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                               <rect x="3" y="3" width="18" height="18" rx="2" />
