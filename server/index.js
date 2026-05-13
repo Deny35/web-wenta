@@ -65,6 +65,47 @@ app.delete('/api/projects/:id', requireAuth, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// Productions (Co produkujemy)
+app.get('/api/productions', async (_, res) => {
+  try {
+    const rows = await query('SELECT * FROM productions ORDER BY sort_order, id');
+    res.json(rows);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/productions', requireAuth, async (req, res) => {
+  try {
+    const { title, desc, img, icon } = req.body;
+    const id = Date.now();
+    const count = await query('SELECT COUNT(*) FROM productions');
+    const sort_order = parseInt(count[0].count);
+    const rows = await query(
+      'INSERT INTO productions (id, title, "desc", img, icon, sort_order) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
+      [id, title, desc || '', img || '', icon || '', sort_order]
+    );
+    res.json(rows[0]);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/productions/:id', requireAuth, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const fields = req.body;
+    const keys   = Object.keys(fields);
+    const values = keys.map(k => fields[k]);
+    const set    = keys.map((k, i) => `"${k}" = $${i + 2}`).join(', ');
+    const rows   = await query(`UPDATE productions SET ${set} WHERE id = $1 RETURNING *`, [id, ...values]);
+    res.json(rows[0]);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/productions/:id', requireAuth, async (req, res) => {
+  try {
+    await query('DELETE FROM productions WHERE id = $1', [Number(req.params.id)]);
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // Services
 app.get('/api/services', async (_, res) => {
   try {

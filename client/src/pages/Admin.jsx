@@ -402,6 +402,175 @@ function ProjectsSection({ showSuccess }) {
 }
 
 
+function ProductionsAdminSection({ showSuccess }) {
+  const [items, setItems]         = useState([]);
+  const [editingId, setEditingId] = useState(null);
+
+  const [title, setTitle]       = useState('');
+  const [desc, setDesc]         = useState('');
+  const [coverData, setCoverData] = useState('');
+
+  const coverRef = useRef();
+  const [saving, setSaving]   = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  async function refresh() {
+    setLoading(true);
+    const list = await api.productions.list();
+    setItems(list);
+    setLoading(false);
+  }
+
+  useEffect(() => { refresh(); }, []);
+
+  function reset() {
+    setEditingId(null);
+    setTitle(''); setDesc(''); setCoverData('');
+    if (coverRef.current) coverRef.current.value = '';
+  }
+
+  function startEdit(p) {
+    setEditingId(p.id);
+    setTitle(p.title);
+    setDesc(p.desc || '');
+    setCoverData(p.img || '');
+  }
+
+  async function handleCoverChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setCoverData(await readFileAsDataURL(file));
+  }
+
+  async function save(e) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      if (editingId) {
+        const changes = { title, desc };
+        if (coverData) changes.img = coverData;
+        await api.productions.update(editingId, changes);
+        showSuccess('Zaktualizowano!');
+      } else {
+        await api.productions.add({ title, desc, img: coverData });
+        showSuccess('Dodano pozycję!');
+        reset();
+      }
+      await refresh();
+    } catch (err) {
+      alert('Błąd: ' + err.message);
+    }
+    setSaving(false);
+  }
+
+  async function deleteItem(id) {
+    if (!confirm('Usunąć pozycję?')) return;
+    if (editingId === id) reset();
+    await api.productions.remove(id);
+    await refresh();
+  }
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6 items-start">
+
+      <div className="bg-white border border-slate-200 rounded-xl p-6">
+        <form onSubmit={save}>
+          <h3 className="text-base font-bold text-slate-800 mb-4">
+            {editingId ? 'Edytuj pozycję' : 'Dodaj pozycję'}
+          </h3>
+
+          <div className="mb-3">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Nazwa *</label>
+            <input
+              required value={title} onChange={e => setTitle(e.target.value)}
+              className="w-full px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand"
+              placeholder="np. Zbiorniki nierdzewne"
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Opis</label>
+            <textarea
+              value={desc} onChange={e => setDesc(e.target.value)} rows={3}
+              className="w-full px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand resize-vertical"
+              placeholder="Krótki opis widoczny w akordonie…"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Zdjęcie</label>
+            <input type="file" accept="image/*" ref={coverRef} onChange={handleCoverChange} className="text-sm text-slate-500" />
+            {coverData && <img src={coverData} alt="" className="mt-2 w-full aspect-video object-cover rounded border border-slate-200" />}
+          </div>
+
+          <div className="flex gap-3">
+            <button type="submit" disabled={saving}
+              className="flex-1 px-4 py-2.5 bg-brand text-white font-bold rounded text-sm hover:opacity-90 transition-opacity disabled:opacity-60"
+            >
+              {saving ? 'Zapisywanie…' : editingId ? 'Zapisz' : 'Dodaj'}
+            </button>
+            {editingId && (
+              <button type="button" onClick={reset}
+                className="px-4 py-2.5 border border-slate-200 rounded text-sm font-semibold text-slate-600 hover:bg-slate-50"
+              >
+                Anuluj
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-xl p-6">
+        <h3 className="text-base font-bold text-slate-800 mb-4">Lista pozycji</h3>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <img src="/Projekt bez nazwy-4.png" alt="Wenta" className="w-24 animate-pulse opacity-60" />
+            <p className="text-xs text-slate-400 font-semibold uppercase tracking-widest">Ładowanie…</p>
+          </div>
+        ) : !items.length && <p className="text-sm text-slate-400">Brak pozycji.</p>}
+
+        <div className="flex flex-col gap-2">
+          {items.map(p => (
+            <div key={p.id} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg">
+              {p.img
+                ? <img src={p.img} alt="" className="w-14 h-10 object-cover rounded flex-shrink-0" />
+                : <div className="w-14 h-10 bg-slate-100 rounded flex-shrink-0" />
+              }
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-sm text-slate-800 truncate">{p.title}</div>
+                <div className="text-xs text-slate-400 truncate">{p.desc || '—'}</div>
+              </div>
+
+              <button onClick={() => startEdit(p)}
+                className="w-8 h-8 flex-shrink-0 border border-blue-200 rounded grid place-items-center hover:bg-blue-50 transition-colors"
+                title="Edytuj"
+              >
+                <svg className="w-3.5 h-3.5 stroke-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+
+              <button onClick={() => deleteItem(p.id)}
+                className="w-8 h-8 flex-shrink-0 border border-red-200 rounded grid place-items-center hover:bg-red-50 transition-colors"
+                title="Usuń"
+              >
+                <svg className="w-3.5 h-3.5 stroke-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14H6L5 6"/>
+                  <path d="M10 11v6M14 11v6"/>
+                  <path d="M9 6V4h6v2"/>
+                </svg>
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 function ServicesAdminSection({ showSuccess }) {
   const [services, setServices]       = useState([]);
   const [editingId, setEditingId]     = useState(null);
@@ -1077,7 +1246,7 @@ export default function Admin() {
       <div className="max-w-6xl mx-auto px-6 py-8">
 
         <div className="flex border-b-2 border-slate-200 mb-6 gap-0">
-          {[['projects','Projekty'], ['products','Produkty seryjne'], ['services','Usługi'], ['clients','Klienci'], ['content','Treść strony']].map(([t, label]) => (
+          {[['projects','Projekty'], ['products','Produkty seryjne'], ['services','Usługi'], ['productions','Co produkujemy'], ['clients','Klienci'], ['content','Treść strony']].map(([t, label]) => (
             <button
               key={t}
               onClick={() => setMainTab(t)}
@@ -1094,11 +1263,12 @@ export default function Admin() {
 
         <SuccessMsg msg={success} onHide={() => setSuccess('')} />
 
-        {mainTab === 'projects'  && <ProjectsSection      showSuccess={setSuccess} />}
-        {mainTab === 'products'  && <ProductsSection      showSuccess={setSuccess} />}
-        {mainTab === 'services'  && <ServicesAdminSection showSuccess={setSuccess} />}
-        {mainTab === 'clients'   && <ClientsSection       showSuccess={setSuccess} />}
-        {mainTab === 'content'   && <AdminContent         showSuccess={setSuccess} />}
+        {mainTab === 'projects'    && <ProjectsSection        showSuccess={setSuccess} />}
+        {mainTab === 'products'    && <ProductsSection        showSuccess={setSuccess} />}
+        {mainTab === 'services'    && <ServicesAdminSection   showSuccess={setSuccess} />}
+        {mainTab === 'productions' && <ProductionsAdminSection showSuccess={setSuccess} />}
+        {mainTab === 'clients'     && <ClientsSection         showSuccess={setSuccess} />}
+        {mainTab === 'content'     && <AdminContent           showSuccess={setSuccess} />}
       </div>
     </div>
   );

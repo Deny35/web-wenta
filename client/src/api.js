@@ -46,6 +46,27 @@ export const api = {
     }).then(handle),
   },
 
+  productions: {
+    list: () => fetch(`${BASE}/productions`).then(handle),
+
+    add: (data) => fetch(`${BASE}/productions`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(data)
+    }).then(handle),
+
+    update: (id, data) => fetch(`${BASE}/productions/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(data)
+    }).then(handle),
+
+    remove: (id) => fetch(`${BASE}/productions/${id}`, {
+      method: 'DELETE',
+      headers: authHeaders()
+    }).then(handle),
+  },
+
   services: {
     list: () => fetch(`${BASE}/services`).then(handle),
 
