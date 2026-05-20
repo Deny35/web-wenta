@@ -455,17 +455,6 @@ export default function Home() {
         </section>
 
 
-        <section id="klienci" className="py-20">
-          <div className="max-w-5xl mx-auto px-6 mb-8">
-            <Label>Klienci</Label>
-            <h2 className="mt-1 text-3xl font-extrabold text-slate-800">Zaufali nam</h2>
-          </div>
-          <div className="pb-10">
-            <Carousel clients={clients} />
-          </div>
-        </section>
-
-
         {featuredProducts.length > 0 && (
           <section id="produkty-seryjne" className="py-20 bg-white">
             <div className="max-w-5xl mx-auto px-6">
@@ -518,6 +507,17 @@ export default function Home() {
             </div>
           </section>
         )}
+
+
+        <section id="klienci" className="py-20">
+          <div className="max-w-5xl mx-auto px-6 mb-8">
+            <Label>Klienci</Label>
+            <h2 className="mt-1 text-3xl font-extrabold text-slate-800">Zaufali nam</h2>
+          </div>
+          <div className="pb-10">
+            <Carousel clients={clients} />
+          </div>
+        </section>
 
 
         <section id="kontakt" className="py-20 bg-dark">

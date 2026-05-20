@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
-import AdminContent from './AdminContent';
+
 
 
 function readFileAsDataURL(file) {
@@ -939,7 +939,7 @@ export default function Admin() {
       <div className="max-w-6xl mx-auto px-6 py-8">
 
         <div className="flex border-b-2 border-slate-200 mb-6 gap-0">
-          {[['projects','Projekty'], ['products','Produkty seryjne'], ['clients','Klienci'], ['content','Treść strony']].map(([t, label]) => (
+          {[['projects','Projekty'], ['products','Produkty seryjne'], ['clients','Klienci']].map(([t, label]) => (
             <button
               key={t}
               onClick={() => setMainTab(t)}
@@ -956,10 +956,10 @@ export default function Admin() {
 
         <SuccessMsg msg={success} onHide={() => setSuccess('')} />
 
-        {mainTab === 'projects'  && <ProjectsSection  showSuccess={setSuccess} />}
-        {mainTab === 'products'  && <ProductsSection  showSuccess={setSuccess} />}
-        {mainTab === 'clients'   && <ClientsSection   showSuccess={setSuccess} />}
-        {mainTab === 'content'   && <AdminContent     showSuccess={setSuccess} />}
+        {mainTab === 'projects'    && <ProjectsSection        showSuccess={setSuccess} />}
+        {mainTab === 'products'    && <ProductsSection        showSuccess={setSuccess} />}
+
+        {mainTab === 'clients'     && <ClientsSection         showSuccess={setSuccess} />}
       </div>
     </div>
   );
