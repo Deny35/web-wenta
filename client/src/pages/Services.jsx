@@ -33,12 +33,6 @@ const SERVICES = [
     tags: ['Stal nierdzewna', 'Rurociągi', 'Zbiorniki', 'Stacje CIP'],
   },
   {
-    title: 'Instalacje transportowe',
-    desc: 'Projektowanie i realizacja systemów transportu wewnętrznego surowców i produktów gotowych w zakładach spożywczych, chemicznych i kosmetycznych: przenośniki taśmowe i ślimakowe, rurociągi grawitacyjne, instalacje pneumatyczne oraz systemy zasypowe. Dobór rozwiązań z uwzględnieniem wydajności, wymagań higienicznych i kosztów eksploatacji.',
-    img: '/znak_zapytania.jpg',
-    tags: ['Transport pneumatyczny', 'Przenośniki', 'Systemy zasypowe'],
-  },
-  {
     title: 'Montaż linii technologicznych',
     desc: 'Kompleksowa realizacja montaży linii technologicznych w zakładach branży spożywczej, chemicznej i kosmetycznej – od prac spawalniczych i mechanicznych, przez podłączenia elektryczne, po uruchomienie i testy akceptacyjne. Po zakończeniu montażu dostępne szkolenie personelu obsługi oraz serwis gwarancyjny i pogwarancyjny.',
     img: '/znak_zapytania.jpg',

@@ -221,6 +221,11 @@ function ImageAccordion({ items, label }) {
         <div className="absolute bottom-0 left-0 right-0 p-6" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.25s ease' }}>
           <p className="text-white font-extrabold text-lg leading-snug">{active.title}</p>
           <p className="text-white/60 text-xs mt-1">{active.desc}</p>
+          {active.link && (
+            <Link to={active.link} className="inline-block mt-3 px-4 py-1.5 bg-brand text-white text-xs font-bold rounded hover:opacity-90 transition-opacity">
+              Zobacz produkty →
+            </Link>
+          )}
         </div>
       </div>
     </div>
@@ -337,15 +342,12 @@ function ProjectTile({ p }) {
 export default function Home() {
   const { c } = useContent();
 
-  const [featured,          setFeatured]          = useState([]);
-  const [clients,           setClients]           = useState([]);
-  const [featuredProducts,  setFeaturedProducts]  = useState([]);
-  const [productsExpanded,  setProductsExpanded]  = useState(false);
+  const [featured, setFeatured] = useState([]);
+  const [clients,  setClients]  = useState([]);
 
   useEffect(() => {
     api.projects.list().then(list => setFeatured(list.filter(p => p.featured).slice(0, 3)));
     api.clients.list().then(setClients);
-    api.products.list().then(list => setFeaturedProducts(list.filter(p => p.featured)));
   }, []);
 
   return (
@@ -404,6 +406,7 @@ export default function Home() {
               { icon: '<path d="M12 22V12m0 0L8 8m4 4l4-4M4 6h16"/>',                         title: 'Mieszalniki przemysłowe', desc: 'Różne typy wirników – do roztworów, past, emulsji i zawiesin.',                   img: '/co_produkujemy/Mieszalniki_przemyslowe.jpg' },
               { icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>', title: 'Przenośniki', desc: 'Taśmowe, ślimakowe i łańcuchowe ze stali nierdzewnej.',                            img: '/znak_zapytania.jpg' },
               { icon: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>', title: 'Konstrukcje stalowe', desc: 'Platformy, podesty, schody i balustrady ze stali nierdzewnej.', img: '/co_produkujemy/Konstrukcje_stalowe.jpg' },
+              { icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>', title: 'Produkty seryjne', desc: 'Standardowe produkty ze stali nierdzewnej gotowe do zamówienia lub modyfikacji.', img: '/seryjne.jpg', link: '/produkty-seryjne' },
             ]} />
           </div>
         </section>
@@ -413,29 +416,36 @@ export default function Home() {
           <div className="max-w-5xl mx-auto px-6">
             <Label>Usługi</Label>
             <h2 className="mt-1 mb-10 text-3xl font-extrabold text-white">Od projektu do serwisu</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 rounded-2xl overflow-hidden">
-              {[
-                { title: 'Projektowanie 3D',       desc: 'Projekty P&ID, rysunki warsztatowe, wizualizacje 3D.',         img: '/znak_zapytania.jpg' },
-                { title: 'Obróbka i spawanie',     desc: 'Cięcie laserowe, CNC, spawanie TIG orbitalne.',                img: '/znak_zapytania.jpg' },
-                { title: 'Izolacje techniczne',    desc: 'Izolacje termiczne rurociągów i zbiorników.',                  img: '/znak_zapytania.jpg' },
-                { title: 'Maszyny spożywcze',      desc: 'Produkcja maszyn dla branży spożywczej.',                      img: '/znak_zapytania.jpg' },
-                { title: 'Instalacje procesowe',   desc: 'Instalacje ze stali nierdzewnej dla przemysłu.',               img: '/znak_zapytania.jpg' },
-                { title: 'Transport wewnętrzny',   desc: 'Przenośniki, rurociągi, instalacje pneumatyczne.',             img: '/znak_zapytania.jpg' },
-                { title: 'Montaż linii',           desc: 'Kompletne linie od spawania po uruchomienie.',                 img: '/znak_zapytania.jpg' },
-              ].map(s => (
-                <div
-                  key={s.title}
-                  className="relative overflow-hidden group cursor-default"
-                  style={{ height: '280px' }}
-                >
-                  <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-dark/60 group-hover:bg-dark/30 transition-colors duration-500" />
-                  <div className="absolute inset-0 flex flex-col justify-end p-5">
-                    <h3 className="text-white font-extrabold text-base leading-snug">{s.title}</h3>
-                    <p className="text-white/0 group-hover:text-white/70 text-xs mt-1 leading-relaxed transition-all duration-500 max-h-0 group-hover:max-h-20 overflow-hidden">{s.desc}</p>
-                  </div>
+            {(() => {
+              const services = [
+                { title: 'Projektowanie 3D',     desc: 'Projekty P&ID, rysunki warsztatowe, wizualizacje 3D.',             img: '/znak_zapytania.jpg' },
+                { title: 'Obróbka i spawanie',   desc: 'Frezowanie CNC, spawanie TIG orbitalne, elektropolerowanie.',     img: '/znak_zapytania.jpg' },
+                { title: 'Izolacje techniczne',  desc: 'Izolacje termiczne rurociągów i zbiorników.',                      img: '/znak_zapytania.jpg' },
+                { title: 'Maszyny spożywcze',    desc: 'Urządzenia procesowe dla branży spożywczej i chemicznej.',        img: '/znak_zapytania.jpg' },
+                { title: 'Instalacje procesowe', desc: 'Instalacje ze stali nierdzewnej dla przemysłu.',                   img: '/znak_zapytania.jpg' },
+                { title: 'Montaż linii',         desc: 'Kompletne linie od spawania po uruchomienie i serwis.',           img: '/znak_zapytania.jpg' },
+              ];
+              const spans = ['col-span-2','col-span-1','col-span-1','col-span-2','col-span-2','col-span-1'];
+              const heights = ['h-64','h-64','h-64','h-56','h-56','h-56'];
+              return (
+                <div className="grid grid-cols-3 gap-3">
+                  {services.map((s, i) => (
+                    <div key={s.title} className={`${spans[i]} ${heights[i]} relative rounded-2xl overflow-hidden group cursor-default`}>
+                      <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/30 to-transparent group-hover:from-dark/70 transition-colors duration-500" />
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                        <h3 className="text-white font-extrabold text-base leading-snug">{s.title}</h3>
+                        <p className="text-white/0 group-hover:text-white/70 text-xs mt-1 leading-relaxed overflow-hidden max-h-0 group-hover:max-h-16 transition-all duration-500">{s.desc}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              );
+            })()}
+            <div className="mt-6 text-center">
+              <a href="/uslugi" className="inline-block px-8 py-3 rounded-lg border-2 border-white/20 text-white/70 font-bold text-sm hover:border-accent hover:text-accent transition-colors">
+                Wszystkie usługi →
+              </a>
             </div>
           </div>
         </section>
@@ -462,55 +472,6 @@ export default function Home() {
         </section>
 
 
-        {featuredProducts.length > 0 && (
-          <section id="produkty-seryjne" className="py-20 bg-white">
-            <div className="max-w-5xl mx-auto px-6">
-              <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
-                <div>
-                  <Label>Oferta</Label>
-                  <h2 className="mt-1 text-3xl font-extrabold text-slate-800">Produkty seryjne</h2>
-                </div>
-                <Link to="/produkty-seryjne" className="px-5 py-2.5 rounded border-2 border-accent text-accent font-bold text-sm hover:bg-accent hover:text-white transition-colors">
-                  Pełny katalog →
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {(productsExpanded ? featuredProducts : featuredProducts.slice(0, 3)).map(p => (
-                  <Link
-                    key={p.id}
-                    to={`/produkt/${p.id}`}
-                    className="group bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-                  >
-                    <div className="aspect-video bg-slate-100 overflow-hidden">
-                      {p.img
-                        ? <img src={p.img} alt={p.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
-                        : <div className="w-full h-full bg-slate-200" />
-                      }
-                    </div>
-                    <div className="p-5">
-                      {p.category && (
-                        <span className="text-xs font-bold uppercase tracking-widest text-accent">{p.category}</span>
-                      )}
-                      <h3 className="mt-1 text-base font-extrabold text-slate-800 leading-snug group-hover:text-brand transition-colors">{p.title}</h3>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-
-              {featuredProducts.length > 3 && (
-                <div className="text-center mt-8">
-                  <button
-                    onClick={() => setProductsExpanded(e => !e)}
-                    className="px-8 py-3 rounded border-2 border-slate-200 text-slate-600 font-bold text-sm hover:border-brand hover:text-brand transition-colors"
-                  >
-                    {productsExpanded ? 'Zwiń ↑' : `Pokaż wszystkie (${featuredProducts.length}) ↓`}
-                  </button>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
 
 
         <section id="klienci" className="py-20">
