@@ -4,43 +4,43 @@ import Footer from '../components/Footer';
 const SERVICES = [
   {
     title: 'Projektowanie 3D',
-    desc: 'Każdy projekt zaczyna się u nas od szczegółowej dokumentacji. Tworzymy projekty P&ID, rysunki warsztatowe oraz pełne wizualizacje 3D, które pozwalają klientowi zobaczyć efekt końcowy jeszcze przed rozpoczęciem produkcji. Precyzyjna dokumentacja techniczna eliminuje błędy na etapie produkcji i montażu, skraca czas realizacji i obniża koszty.',
+    desc: 'Każdy projekt poprzedzony szczegółową dokumentacją techniczną: projekty P&ID, rysunki warsztatowe oraz wizualizacje 3D dostosowane do specyfiki branży spożywczej, chemicznej i kosmetycznej. Precyzyjna dokumentacja ogranicza ryzyko błędów na etapie produkcji, skraca czas realizacji i redukuje koszty wdrożenia.',
     img: '/znak_zapytania.jpg',
     tags: ['P&ID', 'CAD 3D', 'Dokumentacja techniczna'],
   },
   {
     title: 'Obróbka i spawanie',
-    desc: 'Posiadamy własny zakład produkcyjny z nowoczesnym parkiem maszynowym. Realizujemy cięcie laserowe, obróbkę CNC, spawanie TIG orbitalne oraz elektropolerowanie powierzchni. Gwarantujemy najwyższą jakość połączeń spawalniczych, potwierdzoną certyfikatami i protokołami badań.',
+    desc: 'Produkcja prowadzona we własnym zakładzie z nowoczesnym parkiem maszynowym. Zakres obróbki obejmuje frezowanie CNC, spawanie TIG orbitalne oraz elektropolerowanie powierzchni – kluczowe dla zachowania najwyższych standardów higieny w przemyśle spożywczym, chemicznym i kosmetycznym. Jakość połączeń spawalniczych potwierdzana certyfikatami i protokołami badań.',
     img: '/znak_zapytania.jpg',
     tags: ['Spawanie TIG', 'Cięcie CNC', 'Elektropolerowanie'],
   },
   {
     title: 'Izolacje techniczne',
-    desc: 'Wykonujemy izolacje termiczne rurociągów i zbiorników procesowych z zastosowaniem obudów ze stali nierdzewnej lub aluminium. Nasze izolacje zapewniają utrzymanie właściwej temperatury mediów procesowych, ograniczają straty energii i chronią personel przed poparzeniami. Dobieramy materiały izolacyjne adekwatnie do temperatur pracy instalacji.',
+    desc: 'Izolacje termiczne rurociągów i zbiorników procesowych z obudowami ze stali nierdzewnej lub aluminium – dedykowane dla linii produkcyjnych w przemyśle spożywczym, chemicznym i kosmetycznym. Zastosowane rozwiązania utrzymują właściwą temperaturę mediów, minimalizują straty energii i zapewniają bezpieczeństwo personelu.',
     img: '/znak_zapytania.jpg',
     tags: ['Izolacja termiczna', 'Obudowy nierdzewne', 'Oszczędność energii'],
   },
   {
     title: 'Maszyny przemysłu spożywczego',
-    desc: 'Projektujemy i produkujemy maszyny oraz urządzenia dedykowane dla branży spożywczej, farmaceutycznej i kosmetycznej. Wszystkie elementy konstrukcyjne wykonane są ze stali nierdzewnej gatunku AISI 304 lub 316L i spełniają normy EHEDG oraz GMP. Urządzenia projektowane są z myślą o łatwym myciu i dezynfekcji (CIP/SIP).',
+    desc: 'Projektowanie i produkcja maszyn oraz urządzeń procesowych dla branży spożywczej, kosmetycznej i chemicznej. Konstrukcje wykonywane ze stali nierdzewnej AISI 304 lub 316L. Każde urządzenie projektowane z uwzględnieniem wymagań mycia i dezynfekcji w systemach CIP/SIP.',
     img: '/znak_zapytania.jpg',
-    tags: ['EHEDG', 'GMP', 'CIP/SIP', 'AISI 316L'],
+    tags: ['CIP/SIP', 'AISI 316L', 'AISI 304'],
   },
   {
     title: 'Instalacje procesowe',
-    desc: 'Budujemy kompleksowe instalacje procesowe ze stali nierdzewnej dla przemysłu spożywczego, chemicznego i farmaceutycznego. Obejmuje to rurociągi, zbiorniki, wymienniki ciepła, stacje CIP oraz całą armaturę. Każda instalacja wykonywana jest zgodnie z wymaganiami technicznymi klienta i obowiązującymi normami branżowymi.',
+    desc: 'Kompleksowe instalacje procesowe ze stali nierdzewnej dla przemysłu spożywczego, chemicznego i kosmetycznego. Zakres dostaw obejmuje rurociągi, zbiorniki, wymienniki ciepła, stacje CIP oraz kompletną armaturę. Każda instalacja realizowana zgodnie z wymaganiami technicznymi zleceniodawcy i normami branżowymi.',
     img: '/znak_zapytania.jpg',
     tags: ['Stal nierdzewna', 'Rurociągi', 'Zbiorniki', 'Stacje CIP'],
   },
   {
     title: 'Instalacje transportowe',
-    desc: 'Projektujemy i budujemy systemy transportu wewnętrznego surowców i produktów: przenośniki taśmowe i ślimakowe, rurociągi grawitacyjne, instalacje pneumatyczne oraz systemy zasypowe. Dobieramy rozwiązania optymalne pod względem wydajności, higieny i kosztów eksploatacji.',
+    desc: 'Projektowanie i realizacja systemów transportu wewnętrznego surowców i produktów gotowych w zakładach spożywczych, chemicznych i kosmetycznych: przenośniki taśmowe i ślimakowe, rurociągi grawitacyjne, instalacje pneumatyczne oraz systemy zasypowe. Dobór rozwiązań z uwzględnieniem wydajności, wymagań higienicznych i kosztów eksploatacji.',
     img: '/znak_zapytania.jpg',
     tags: ['Transport pneumatyczny', 'Przenośniki', 'Systemy zasypowe'],
   },
   {
     title: 'Montaż linii technologicznych',
-    desc: 'Realizujemy kompleksowe montaże linii technologicznych – od prac spawalniczych i mechanicznych, przez podłączenia elektryczne i automatykę, po uruchomienie i testy akceptacyjne. Po zakończeniu montażu zapewniamy szkolenie personelu obsługi oraz serwis gwarancyjny i pogwarancyjny.',
+    desc: 'Kompleksowa realizacja montaży linii technologicznych w zakładach branży spożywczej, chemicznej i kosmetycznej – od prac spawalniczych i mechanicznych, przez podłączenia elektryczne, po uruchomienie i testy akceptacyjne. Po zakończeniu montażu dostępne szkolenie personelu obsługi oraz serwis gwarancyjny i pogwarancyjny.',
     img: '/znak_zapytania.jpg',
     tags: ['Montaż', 'Uruchomienie', 'Szkolenia', 'Serwis'],
   },
@@ -57,7 +57,7 @@ export default function Services() {
             <span className="text-xs font-bold tracking-widest uppercase text-accent">Co oferujemy</span>
             <h1 className="mt-2 text-4xl font-extrabold text-white">Nasze usługi</h1>
             <p className="mt-3 text-white/60 max-w-xl leading-relaxed">
-              Realizujemy projekty kompleksowo – od koncepcji, przez produkcję, po montaż i serwis. Każdy etap wykonujemy samodzielnie we własnym zakładzie.
+              Projekty realizowane są kompleksowo – od koncepcji, przez produkcję, po montaż i serwis. Każdy etap wykonywany jest samodzielnie we własnym zakładzie.
             </p>
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function Services() {
           <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-2xl font-extrabold text-white">Potrzebujesz wyceny?</h3>
-              <p className="text-white/50 mt-1 text-sm">Skontaktuj się z nami – odpowiemy w ciągu 24 godzin.</p>
+              <p className="text-white/50 mt-1 text-sm">Skontaktuj się z nami.</p>
             </div>
             <a href="/kontakt" className="flex-shrink-0 px-8 py-3 rounded-lg bg-brand text-white font-bold text-sm hover:opacity-90 transition-opacity">
               Kontakt →

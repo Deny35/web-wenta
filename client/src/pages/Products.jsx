@@ -92,10 +92,7 @@ export default function Products() {
                         <span className="text-xs font-bold uppercase tracking-widest text-accent">{p.category}</span>
                       )}
                       <h2 className="mt-1 text-base font-extrabold text-slate-800 leading-snug group-hover:text-brand transition-colors">{p.title}</h2>
-                      {p.short_desc && (
-                        <p className="mt-2 text-sm text-slate-500 leading-relaxed line-clamp-2">{p.short_desc}</p>
-                      )}
-                      <span className="mt-4 inline-block text-xs font-bold text-accent uppercase tracking-wider">
+<span className="mt-4 inline-block text-xs font-bold text-accent uppercase tracking-wider">
                         Szczegóły →
                       </span>
                     </div>

@@ -409,7 +409,6 @@ function ProductsSection({ showSuccess }) {
 
   const [title, setTitle]             = useState('');
   const [category, setCategory]       = useState('');
-  const [shortDesc, setShortDesc]     = useState('');
   const [opis, setOpis]               = useState('');
   const [coverData, setCoverData]     = useState('');
   const [galleryData, setGalleryData] = useState([]);
@@ -435,7 +434,7 @@ function ProductsSection({ showSuccess }) {
 
   function reset() {
     setEditingId(null); setTab('tile');
-    setTitle(''); setCategory(''); setShortDesc(''); setOpis('');
+    setTitle(''); setCategory(''); setOpis('');
     setCoverData(''); setGalleryData([]);
     setSpecs({ cols: 2, headers: ['Parametr', 'Wartość'], rows: [] });
     setSpecConfigured(false); setSpecColsInput(2); setSpecRowsInput(3);
@@ -446,7 +445,7 @@ function ProductsSection({ showSuccess }) {
   function startEdit(p) {
     setEditingId(p.id); setTab('tile');
     setTitle(p.title); setCategory(p.category || '');
-    setShortDesc(p.short_desc || ''); setOpis(p.opis || '');
+    setOpis(p.opis || '');
     setCoverData(p.img || '');
     setGalleryData(Array.isArray(p.images) ? p.images.slice() : []);
     const s = p.specs && !Array.isArray(p.specs) && p.specs.rows ? p.specs : { cols: 2, headers: ['Parametr', 'Wartość'], rows: [] };
@@ -478,7 +477,7 @@ function ProductsSection({ showSuccess }) {
         await api.products.update(editingId, changes);
         showSuccess('Produkt zaktualizowany!');
       } else {
-        await api.products.add({ title, category, short_desc: shortDesc, opis, img: coverData, images: [], featured: false });
+        await api.products.add({ title, category, opis, img: coverData, images: [], featured: false });
         showSuccess('Produkt dodany!');
         reset();
       }
@@ -496,7 +495,7 @@ function ProductsSection({ showSuccess }) {
     try {
       const current = products.find(p => p.id === editingId) || {};
       const images  = galleryData.length ? galleryData : (current.images || []);
-      await api.products.update(editingId, { short_desc: shortDesc, opis, images });
+      await api.products.update(editingId, { opis, images });
       showSuccess('Szczegóły zaktualizowane!');
       await refresh();
     } catch (err) {
@@ -632,21 +631,7 @@ function ProductsSection({ showSuccess }) {
             <h3 className="text-base font-bold text-slate-800 mb-4">Szczegóły produktu</h3>
 
             <div className="mb-3">
-              <div className="flex justify-between items-center mb-1">
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">Krótki opis (kafelek)</label>
-                <span className={`text-xs font-semibold ${shortDesc.length > 120 ? 'text-red-500' : 'text-slate-400'}`}>
-                  {shortDesc.length}
-                </span>
-              </div>
-              <textarea
-                value={shortDesc} onChange={e => setShortDesc(e.target.value)} rows={2}
-                className="w-full px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand resize-vertical"
-                placeholder="Krótki opis widoczny na kafelku…"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Długi opis (strona produktu)</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Opis (strona produktu)</label>
               <textarea
                 value={opis} onChange={e => setOpis(e.target.value)} rows={6}
                 className="w-full px-3 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-brand resize-vertical"

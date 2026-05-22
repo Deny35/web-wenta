@@ -24,7 +24,7 @@ const SLIDES = [
   {
     bg:    '/Inzynier.jpg',
     label: 'Kompleksowo',
-    title: 'Izolacje, projektowanie 3D,\nobróbka stali, relokacja maszyn',
+    title: 'Izolacje, projektowanie 3D,\nobróbka stali nierdzewnej',
     desc:  'Dedykowane rozwiązania technologiczne dopasowane do potrzeb Twojej firmy.',
     cta1:  { label: 'Nasze usługi', href: '/uslugi'  },
     cta2:  { label: 'Kontakt',      href: '/kontakt' },
@@ -33,9 +33,17 @@ const SLIDES = [
     bg:    '/Instalacja.jpg',
     label: 'Stal nierdzewna',
     title: 'Maszyny i urządzenia\ndla przemysłu spożywczego',
-    desc:  'Produkujemy i montujemy maszyny spełniające normy EHEDG i GMP. Jakość potwierdzona certyfikatami.',
+    desc:  'Produkujemy i montujemy maszyny ze stali nierdzewnej dedykowane dla przemysłu spożywczego i chemicznego.',
     cta1:  { label: 'Realizacje', href: '/projekty' },
     cta2:  { label: 'Kontakt',    href: '/kontakt'  },
+  },
+  {
+    bg:    '/seryjne.jpg',
+    label: 'Produkty seryjne',
+    title: 'Produkujemy produkty\nseryjne ze stali nierdzewnej',
+    desc:  'Standardowe produkty dostępne z naszego zakładu – gotowe do zamówienia lub modyfikacji pod konkretne wymagania.',
+    cta1:  { label: 'Zobacz produkty', href: '/produkty-seryjne' },
+    cta2:  { label: 'Kontakt',         href: '/kontakt'          },
   },
 ];
 
@@ -362,7 +370,7 @@ export default function Home() {
                 </div>
                 <p className="text-slate-700 font-semibold leading-relaxed mb-6">{c('about_desc')}</p>
                 <div className="flex flex-wrap gap-2">
-                  {['Stal nierdzewna','Instalacje kwasoodporne','Projektowanie 3D','EHEDG / GMP','Spawanie orbitalne'].map(tag => (
+                  {['Stal nierdzewna','Instalacje kwasoodporne','Projektowanie 3D','Spawanie orbitalne'].map(tag => (
                     <span key={tag} className="px-3 py-1 rounded-full bg-accent text-white text-xs font-bold">{tag}</span>
                   ))}
                 </div>
@@ -440,7 +448,6 @@ export default function Home() {
                 <Label>Realizacje</Label>
                 <h2 className="mt-1 text-3xl font-extrabold text-slate-800">Wybrane projekty</h2>
               </div>
-              <Link to="/projekty" className="px-5 py-2.5 rounded border-2 border-accent text-accent font-bold text-sm hover:bg-accent hover:text-white transition-colors">Więcej realizacji →</Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -486,9 +493,6 @@ export default function Home() {
                         <span className="text-xs font-bold uppercase tracking-widest text-accent">{p.category}</span>
                       )}
                       <h3 className="mt-1 text-base font-extrabold text-slate-800 leading-snug group-hover:text-brand transition-colors">{p.title}</h3>
-                      {p.short_desc && (
-                        <p className="mt-2 text-sm text-slate-500 leading-relaxed line-clamp-2">{p.short_desc}</p>
-                      )}
                     </div>
                   </Link>
                 ))}

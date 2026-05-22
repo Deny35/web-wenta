@@ -122,9 +122,6 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex-1">
-              {product.short_desc && (
-                <p className="text-lg text-slate-700 font-medium leading-relaxed mb-6">{product.short_desc}</p>
-              )}
               {product.opis && (
                 <div className="prose prose-slate prose-sm max-w-none">
                   {product.opis.split('\n').map((line, i) =>
@@ -134,7 +131,7 @@ export default function ProductDetail() {
                   )}
                 </div>
               )}
-              {!product.short_desc && !product.opis && (
+              {!product.opis && (
                 <p className="text-slate-400 italic">Brak opisu produktu.</p>
               )}
 
